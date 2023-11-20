@@ -10,6 +10,8 @@
     <packaging>pom</packaging>
     <modules>
         <module>spring-core</module>
+        <module>spring-hibernate</module>
+        <module>spring-hibernate-market</module>
     </modules>
 
     <properties>
@@ -17,5 +19,4 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
 </project>
