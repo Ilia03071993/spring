@@ -91,7 +91,8 @@ public class Main {
 
         jake.setBuyerCard(jakeCard);
         linda.setBuyerCard(lindaCard);
-
+        linda.setOrders(List.of(order1,order2));
+        jake.setOrders(List.of(eldorado));
         session.persist(jake);
         session.persist(linda);
 

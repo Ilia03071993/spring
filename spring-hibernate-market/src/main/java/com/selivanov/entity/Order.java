@@ -21,10 +21,22 @@ public class Order {
         this.id = id;
         this.name = name;
     }
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @JoinColumn(name = "buyer_id", referencedColumnName = "id")
+    private Buyer buyer;
+
+    public Buyer getBuyer() {
+        return buyer;
+    }
+
+    public void setBuyer(Buyer buyer) {
+        this.buyer = buyer;
+    }
 
     public List<Product> getProducts() {
         return products;
     }
+
 //    public void addProduct(Product product) {
 //        products.add(product);
 //        product.getOrders().add(this);

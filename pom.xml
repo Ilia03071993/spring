@@ -12,6 +12,7 @@
         <module>spring-core</module>
         <module>spring-hibernate</module>
         <module>spring-hibernate-market</module>
+        <module>spring-jpa</module>
     </modules>
 
     <properties>
