@@ -1,6 +1,7 @@
 package com.example.springdto.controller;
 
 import com.example.springdto.dto.EmployeeAdditionRequest;
+import com.example.springdto.dto.EmployeeAdditionResponse;
 import com.example.springdto.service.DepartmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -54,7 +55,7 @@ public class DepartmentController {
 //    }
 
     @PostMapping("/add-employee")
-    public void addEmployeeToDepartment(@RequestBody EmployeeAdditionRequest employeeAdditionRequest) {
-        departmentService.addEmployeeToDepartment(employeeAdditionRequest);
+    public EmployeeAdditionResponse addEmployeeToDepartment(@RequestBody EmployeeAdditionRequest employeeAdditionRequest) {
+        return departmentService.addEmployeeToDepartment(employeeAdditionRequest);
     }
 }

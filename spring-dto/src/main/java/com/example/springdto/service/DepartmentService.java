@@ -1,12 +1,15 @@
 package com.example.springdto.service;
 
 import com.example.springdto.dto.EmployeeAdditionRequest;
+import com.example.springdto.dto.EmployeeAdditionResponse;
 import com.example.springdto.entity.Department;
 import com.example.springdto.entity.Employee;
 import com.example.springdto.repository.DepartmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -15,7 +18,7 @@ public class DepartmentService {
     private final EmployeeService employeeService;
 
     @Transactional
-    public void addEmployeeToDepartment(EmployeeAdditionRequest employeeAdditionRequest) {
+    public EmployeeAdditionResponse addEmployeeToDepartment(EmployeeAdditionRequest employeeAdditionRequest) {
         //1. employeeId != null employeeId == null
         //2. departmentId != null departmentId == null'
 
@@ -25,8 +28,15 @@ public class DepartmentService {
             department.setName(employeeAdditionRequest.getDepartmentName());
             departmentRepository.save(department);
         } else {
-            department = departmentRepository.findById(employeeAdditionRequest.getDepartmentId())
-                    .orElseThrow();
+            Optional<Department> departmentOptional = departmentRepository
+                    .findById(employeeAdditionRequest.getDepartmentId());
+            if (departmentOptional.isPresent()) {
+                department = departmentOptional.get();
+            } else {
+                Integer departmentId = employeeAdditionRequest.getDepartmentId();
+                return new EmployeeAdditionResponse(false, "Department with id = %d not found".formatted(departmentId));
+            }
+
         }
 
         Employee employee = employeeService.getEmployeeByIdOrDefault(employeeAdditionRequest);
@@ -34,6 +44,8 @@ public class DepartmentService {
         department.addEmployee(employee);
 
         departmentRepository.save(department);
+
+        return new EmployeeAdditionResponse(true, "Success");
     }
 //    @Transactional(readOnly = true)
 //    public List<Department> findAllDepartments() {
