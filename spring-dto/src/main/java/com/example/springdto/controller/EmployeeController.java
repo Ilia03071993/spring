@@ -15,7 +15,7 @@ public class EmployeeController {
     private final EmployeeService employeeService;
 
     @GetMapping
-    public List<Employee> findAllEmployees() {
+    public List<EmployeeDto> findAllEmployees() {
         return employeeService.findAllEmployees();
     }
 
@@ -25,14 +25,14 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public void saveEmployee(@RequestBody Employee employee) {
-        employeeService.saveEmployee(employee);
+    public void saveEmployee(@RequestBody EmployeeDto employeeDto) {
+        employeeService.saveEmployee(employeeDto);
     }
 
     @PutMapping("/{id}")
     public void updateEmployee(@PathVariable Integer id,
-                               @RequestBody Employee employee) {
-        employeeService.updateEmployee(id, employee);
+                               @RequestBody EmployeeDto employeeDto) {
+        employeeService.updateEmployee(id, employeeDto);
     }
 
     @DeleteMapping("/{id}")

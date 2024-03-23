@@ -16,4 +16,7 @@ public interface DepartmentRepository extends JpaRepository<Department, Integer>
 
 //    @Query("SELECT DISTINCT d FROM Department d LEFT JOIN FETCH d.employees")
 //    List<Department> findAllDepartmentsWithEmployees();
+
+        @Query("select d from Department d left join fetch d.employees where d.name = :name")
+    Optional<Department> findDepartmentByName(String name);
 }

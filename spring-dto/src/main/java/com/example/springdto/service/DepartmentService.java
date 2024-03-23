@@ -47,6 +47,11 @@ public class DepartmentService {
 
         return new EmployeeAdditionResponse(true, "Success");
     }
+
+    @Transactional
+    public Optional<Department> findDepartmentByName(String name) {
+        return departmentRepository.findDepartmentByName(name);
+    }
 //    @Transactional(readOnly = true)
 //    public List<Department> findAllDepartments() {
 //        return departmentRepository.findAllDepartments();
