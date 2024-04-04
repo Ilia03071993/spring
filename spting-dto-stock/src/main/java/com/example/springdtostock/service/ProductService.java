@@ -26,26 +26,23 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
+    public Product findProduct(Integer id) {
+        return productRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Product not found with id = %d".formatted(id)));
+    }
+
+    @Transactional(readOnly = true)
     public List<ProductDto> getAllProducts() {
         List<Product> productList = productRepository.findAllProducts();
-        List<ProductDto> productDtoList = new ArrayList<>();
-        if (!productList.isEmpty()) {
-            for (Product product : productList) {
-                ProductDto productDto = new ProductDto();
-                productDto.setName(product.getName());
-                productDto.setPrice(product.getPrice());
-                productDto.setStockQuantity(product.getStockQuantity());
-                productDto.setCategory(product.getCategory().getName());
-                productDtoList.add(productDto);
-            }
-        }
-
-        return productDtoList;
+        return mapToProductDto(productList);
     }
 
     @Transactional(readOnly = true)
     public List<ProductDto> getProductsByCategoriesName(String name) {
         List<Product> productsByCategoryName = productRepository.getProductsByCategoryName(name);
+        return mapToProductDto(productsByCategoryName);
+    }
+
+    private List<ProductDto> mapToProductDto(List<Product> productsByCategoryName) {
         List<ProductDto> productDtoList = new ArrayList<>();
         if (!productsByCategoryName.isEmpty()) {
             for (Product product : productsByCategoryName) {
@@ -64,19 +61,7 @@ public class ProductService {
     @Transactional(readOnly = true)
     public List<ProductDto> getProductsByPrice(BigDecimal minPrice, BigDecimal maxPrice) {
         List<Product> productsByCategoryName = productRepository.getProductsByPrice(minPrice, maxPrice);
-        List<ProductDto> productDtoList = new ArrayList<>();
-        if (!productsByCategoryName.isEmpty()) {
-            for (Product product : productsByCategoryName) {
-                ProductDto productDto = new ProductDto();
-                productDto.setName(product.getName());
-                productDto.setPrice(product.getPrice());
-                productDto.setStockQuantity(product.getStockQuantity());
-                productDto.setCategory(product.getCategory().getName());
-                productDtoList.add(productDto);
-            }
-        }
-
-        return productDtoList;
+        return mapToProductDto(productsByCategoryName);
     }
 
     @Transactional
