@@ -17,6 +17,9 @@ public class Order {
     private Integer id;
     private String name;
 
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status = OrderStatus.NEW;
+
     @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH},
             fetch = FetchType.LAZY)
     private List<OrderItem> orderItemList = new ArrayList<>();

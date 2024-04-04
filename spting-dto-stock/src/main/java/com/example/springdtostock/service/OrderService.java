@@ -3,6 +3,7 @@ package com.example.springdtostock.service;
 import com.example.springdtostock.dto.*;
 import com.example.springdtostock.entity.Order;
 import com.example.springdtostock.entity.OrderItem;
+import com.example.springdtostock.entity.OrderStatus;
 import com.example.springdtostock.entity.Product;
 import com.example.springdtostock.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,12 +41,13 @@ public class OrderService {
                 orderItem.setOrder(order);
                 orderItems.add(orderItem);
             } else {
-                System.out.println("NULL");
+                System.out.println("Order don't create");
             }
         }
 
         order.setOrderItemList(orderItems);
         Order savedOrder = orderRepository.save(order);
+        savedOrder.setStatus(OrderStatus.CONFIRMED);
         return converterToOrderDto(savedOrder);
     }
 
