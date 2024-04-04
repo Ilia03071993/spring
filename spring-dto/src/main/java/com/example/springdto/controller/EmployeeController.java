@@ -1,5 +1,6 @@
 package com.example.springdto.controller;
 
+import com.example.springdto.dto.EmployeeAdditionResponse;
 import com.example.springdto.dto.EmployeeDto;
 import com.example.springdto.entity.Employee;
 import com.example.springdto.service.EmployeeService;
@@ -30,14 +31,16 @@ public class EmployeeController {
     }
 
     @PutMapping("/{id}")
-    public void updateEmployee(@PathVariable Integer id,
-                               @RequestBody EmployeeDto employeeDto) {
+    public EmployeeAdditionResponse updateEmployee(@PathVariable Integer id,
+                                                   @RequestBody EmployeeDto employeeDto) {
         employeeService.updateEmployee(id, employeeDto);
+        return new EmployeeAdditionResponse(true, "Employee with id = %d updatable".formatted(id));
     }
 
     @DeleteMapping("/{id}")
-    public void deleteEmployee(@PathVariable Integer id) {
+    public EmployeeAdditionResponse deleteEmployee(@PathVariable Integer id) {
         employeeService.deleteEmployee(id);
+        return new EmployeeAdditionResponse(true, "Employee with id = %d deleted".formatted(id));
     }
 
 }

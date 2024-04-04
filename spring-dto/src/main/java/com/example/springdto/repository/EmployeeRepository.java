@@ -1,6 +1,5 @@
 package com.example.springdto.repository;
 
-import com.example.springdto.dto.EmployeeDto;
 import com.example.springdto.entity.Department;
 import com.example.springdto.entity.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;

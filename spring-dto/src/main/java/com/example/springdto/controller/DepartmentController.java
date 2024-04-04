@@ -25,8 +25,8 @@ public class DepartmentController {
 //    public Department findDepartmentById(@PathVariable Integer id) {
 //        return departmentService.findDepartmentById(id);
 //    }
-
-    //@GetMapping
+//
+//    @GetMapping
 //public List<Department> findAllDepartments() {
 //    return departmentService.findAllEmployeesWithDepartments();
 //}
@@ -35,8 +35,8 @@ public class DepartmentController {
 //                                        @RequestBody Employee employee) {
 //        departmentService.addEmployeeToDepartment(id, employee);
 //    }
-
-
+//
+//
 //    @PostMapping
 //    public void saveDepartment(@RequestBody Department department) {
 //        departmentService.saveDepartment(department);
@@ -52,7 +52,7 @@ public class DepartmentController {
 //    public void deleteDepartment(@PathVariable Integer id) {
 //        departmentService.deleteDepartment(id);
 //    }
-
+//
 //    @PostMapping("/add-employee")
 //    public EmployeeAdditionResponse addEmployeeToDepartment(@RequestBody EmployeeAdditionRequest employeeAdditionRequest) {
 //        return departmentService.addEmployeeToDepartment(employeeAdditionRequest);
