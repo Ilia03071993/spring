@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/orders")
-public class fitOrderController {
+public class OrderController {
     private final OrderService orderService;
 
     @GetMapping("/{id}/sum")
