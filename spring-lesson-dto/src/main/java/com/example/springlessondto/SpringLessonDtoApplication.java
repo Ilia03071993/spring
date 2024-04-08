@@ -1,12 +1,13 @@
-package com.example.springdtostock;
+package com.example.springlessondto;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SpringDtoStockApplication {
+public class SpringLessonDtoApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SpringDtoStockApplication.class, args);
+        SpringApplication.run(SpringLessonDtoApplication.class, args);
     }
+
 }

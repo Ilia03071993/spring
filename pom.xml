@@ -7,12 +7,17 @@
     <groupId>com.selivanov</groupId>
     <artifactId>spring</artifactId>
     <version>1.0-SNAPSHOT</version>
+
     <packaging>pom</packaging>
+
     <modules>
         <module>spring-core</module>
         <module>spring-hibernate</module>
         <module>spring-hibernate-market</module>
         <module>spring-jpa</module>
+        <module>spring-dto-stock</module>
+        <module>spring-lesson-dto</module>
+        <module>spring-dto</module>
     </modules>
 
     <properties>

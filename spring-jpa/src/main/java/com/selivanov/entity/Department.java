@@ -2,6 +2,7 @@ package com.selivanov.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -14,7 +15,7 @@ public class Department {
     private String name;
 
     @OneToMany(mappedBy = "department", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Employee> employees;
+    private List<Employee> employees = new ArrayList<>();
 
     public Department() {
     }
@@ -29,10 +30,11 @@ public class Department {
     }
 
     public void setEmployees(List<Employee> employees) {
+        this.getEmployees().clear();
         for (Employee employee : employees) {
             employee.setDepartment(this);
         }
-        this.employees = employees;
+        this.employees.addAll(employees);
     }
 
     public Integer getId() {

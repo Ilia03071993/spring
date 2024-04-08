@@ -1,11 +1,10 @@
 package com.example.springdto.controller;
 
 import com.example.springdto.dto.EmployeeAdditionRequest;
-import com.example.springdto.dto.EmployeeAdditionResponse;
+import com.example.springdto.dto.OperationResponse;
 import com.example.springdto.entity.Department;
 import com.example.springdto.service.DepartmentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -57,11 +56,11 @@ public class DepartmentController {
 //    public EmployeeAdditionResponse addEmployeeToDepartment(@RequestBody EmployeeAdditionRequest employeeAdditionRequest) {
 //        return departmentService.addEmployeeToDepartment(employeeAdditionRequest);
 //    }
-
-    @PostMapping("/add-employee")
-    public EmployeeAdditionResponse addEmployeeToDepartment(@RequestBody EmployeeAdditionRequest employeeAdditionRequest) {
-        return departmentService.addEmployeeToDepartment(employeeAdditionRequest);
-    }
+//
+//    @PostMapping("/add-employee")
+//    public OperationResponse addEmployeeToDepartment(@RequestBody EmployeeAdditionRequest employeeAdditionRequest) {
+//        return departmentService.addEmployeeToDepartment(employeeAdditionRequest);
+//    }
 
     @GetMapping
     public Optional<Department> findDepartmentByName(String name) {

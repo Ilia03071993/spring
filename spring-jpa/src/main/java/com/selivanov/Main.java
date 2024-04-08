@@ -4,10 +4,12 @@ import com.selivanov.config.JpaConfig;
 import com.selivanov.entity.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
@@ -39,7 +41,7 @@ public class Main {
 //            entityManager.persist(personChangeName);
             //3.3 - ?
 //            String sql = "update Person p SET p.name = :newValue WHERE p.id = :id";
-//            TypedQuery<Person> personTypedQuery = entityManager.createQuery(sql, Person.class);
+//            Query personTypedQuery = entityManager.createQuery(sql);
 //            personTypedQuery.setParameter("newValue", "Julia");
 //            personTypedQuery.setParameter("id", 1);
 //            personTypedQuery.executeUpdate();
@@ -136,10 +138,11 @@ public class Main {
             Employee employee4 = new Employee(null, "Mark");
             Employee employee5 = new Employee(null, "Lisa");
             Employee employee6 = new Employee(null, "Ivan");
+            Employee employee7 = new Employee(null, "Ilya");
             Department department1 = new Department(null, "IT");
             Department department2 = new Department(null, "HR");
             Department department3 = new Department(null, "New Department");
-            department1.setEmployees(List.of(employee1, employee2)); // - ?
+            department1.setEmployees(List.of(employee1, employee2));
             department2.setEmployees(List.of(employee2));
             department3.setEmployees(List.of(employee1, employee2));
 //            entityManager.persist(department1);
@@ -148,10 +151,11 @@ public class Main {
 //            entityManager.remove(department);
 //            entityManager.merge(department3);
             Department department = entityManager.find(Department.class, 5);
-            department.setEmployees(List.of(employee6));
 
-            entityManager.persist(department);
-            entityManager.refresh(department);
+            department.getEmployees().clear();
+            department.setEmployees(new ArrayList<>(List.of(employee7)));
+            entityManager.merge(department);
+//            entityManager.refresh(department);
 
             entityManager.getTransaction().commit();
 

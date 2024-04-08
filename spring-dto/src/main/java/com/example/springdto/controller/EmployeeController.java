@@ -1,8 +1,8 @@
 package com.example.springdto.controller;
 
-import com.example.springdto.dto.EmployeeAdditionResponse;
+import com.example.springdto.dto.EmployeeAdditionRequest;
 import com.example.springdto.dto.EmployeeDto;
-import com.example.springdto.entity.Employee;
+import com.example.springdto.dto.OperationResponse;
 import com.example.springdto.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -26,21 +26,24 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public void saveEmployee(@RequestBody EmployeeDto employeeDto) {
-        employeeService.saveEmployee(employeeDto);
+    public OperationResponse saveEmployee(@RequestBody EmployeeDto employeeDto) {
+        return employeeService.saveEmployee(employeeDto);
     }
 
     @PutMapping("/{id}")
-    public EmployeeAdditionResponse updateEmployee(@PathVariable Integer id,
-                                                   @RequestBody EmployeeDto employeeDto) {
-        employeeService.updateEmployee(id, employeeDto);
-        return new EmployeeAdditionResponse(true, "Employee with id = %d updatable".formatted(id));
+    public OperationResponse updateEmployee(@PathVariable Integer id,
+                                            @RequestBody EmployeeDto employeeDto) {
+        return employeeService.updateEmployee(id, employeeDto);
     }
 
     @DeleteMapping("/{id}")
-    public EmployeeAdditionResponse deleteEmployee(@PathVariable Integer id) {
-        employeeService.deleteEmployee(id);
-        return new EmployeeAdditionResponse(true, "Employee with id = %d deleted".formatted(id));
+    public OperationResponse deleteEmployee(@PathVariable Integer id) {
+        return employeeService.deleteEmployee(id);
+    }
+
+    @PostMapping("/add-department")
+    public OperationResponse addEmployeeToDepartment(@RequestBody EmployeeAdditionRequest employeeAdditionRequest) {
+        return employeeService.addEmployeeToDepartment(employeeAdditionRequest);
     }
 
 }
