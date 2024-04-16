@@ -29,49 +29,32 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public Product findProduct(Integer id) {
-        return productRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Product not found with id = %d".formatted(id)));
+        return productRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Product not found with id = %d".formatted(id)));
     }
 
     @Transactional(readOnly = true)
     public List<ProductDto> getAllProducts() {
         List<Product> productList = productRepository.findAllProducts();
         return productMapper.toDtoList(productList);
-//        return mapToProductDto(productList);
     }
 
     @Transactional(readOnly = true)
     public List<ProductDto> getProductsByCategoryName(String name) {
         List<Product> productsByCategoryName = productRepository.getProductsByCategoryName(name);
         return productMapper.toDtoList(productsByCategoryName);
-//        return mapToProductDto(productsByCategoryName);
     }
 
     @Transactional(readOnly = true)
     public List<ProductDto> getProductsByPrice(BigDecimal minPrice, BigDecimal maxPrice) {
         List<Product> productsByCategoryName = productRepository.getProductsByPrice(minPrice, maxPrice);
         return productMapper.toDtoList(productsByCategoryName);
-//        return mapToProductDto(productsByCategoryName);
     }
 
     @Transactional
     public void saveProduct(ProductDto productDto) {
-//        Product product = new Product();
-//        product.setName(productDto.getName());
-//        product.setPrice(productDto.getPrice());
-//        product.setStockQuantity(productDto.getStockQuantity());
-//
-//        Category category = categoryService.getCategoryByName(productDto.getCategory())
-//                .orElseGet(() -> {
-//                            Category newCategory = new Category();
-//                            newCategory.setName(productDto.getCategory());
-//                            return newCategory;
-//                        }
-//                );
-//        product.setCategory(category);
-
         Product product = productMapper.toEntity(productDto);
         productRepository.save(product);
-//        productRepository.save(product);
     }
 
     @Transactional
@@ -101,12 +84,10 @@ public class ProductService {
     @Transactional
     public void updateProduct(Integer id, ProductDto productDto) {
         Product udatableProduct = productRepository.getProductById(id).orElseThrow(() -> new NoSuchElementException("Product not found with id = %d".formatted(id)));
-//        udatableProduct.setName(productDto.getName());
-//        udatableProduct.setPrice(productDto.getPrice());
-//        udatableProduct.setStockQuantity(productDto.getStockQuantity());
-        Category category = categoryService.getCategoryByName(productDto.getCategory()).orElseThrow(() -> new NoSuchElementException("Category with id=%d not found".formatted(id)));
+
+        Category category = categoryService.getCategoryByName(productDto.category()).orElseThrow(() -> new NoSuchElementException("Category with id=%d not found".formatted(id)));
         udatableProduct.setCategory(category);
-        productMapper.update(udatableProduct,productDto);
+        productMapper.update(udatableProduct, productDto);
         productRepository.save(udatableProduct);
     }
 
