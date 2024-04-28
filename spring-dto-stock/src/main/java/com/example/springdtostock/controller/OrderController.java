@@ -5,7 +5,9 @@ import com.example.springdtostock.dto.OrderDto;
 import com.example.springdtostock.dto.OrderResponse;
 import com.example.springdtostock.enums.OrderStatus;
 import com.example.springdtostock.service.OrderService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,20 +17,20 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping("/{id}/sum")
-    public OrderResponse getOrderCost(@PathVariable Integer id) {
-        return orderService.getOrderCost(id);
+    public ResponseEntity<OrderResponse> getOrderCost(@PathVariable Integer id) {
+      return ResponseEntity.ok(orderService.getOrderCost(id));
 
     }
 
     @PostMapping("/create")
-    public OrderDto createOrder(@RequestBody CreateOrderRequest request) {
-        return orderService.createOrder(request);
+    public ResponseEntity<OrderDto> createOrder(@Valid @RequestBody CreateOrderRequest request) {
+        return ResponseEntity.ok(orderService.createOrder(request));
     }
 
     @PutMapping("/confirm/{id}/{status}")
-    public OrderResponse confirmOrder(@PathVariable Integer id,
+    public ResponseEntity<OrderResponse> confirmOrder(@PathVariable Integer id,
                                       @PathVariable OrderStatus status) {
-        return orderService.confirmOrder(id, status);
+        return ResponseEntity.ok(orderService.confirmOrder(id, status));
     }
 }
 

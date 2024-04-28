@@ -3,6 +3,8 @@ package com.example.springdtostock.service;
 import com.example.springdtostock.dto.ProductDto;
 import com.example.springdtostock.entity.Category;
 import com.example.springdtostock.entity.Product;
+import com.example.springdtostock.exception.NoSuchCategoryException;
+import com.example.springdtostock.exception.NoSuchProductException;
 import com.example.springdtostock.repository.ProductRepository;
 import com.example.springdtostock.service.maper.ProductMapper;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +23,9 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public ProductDto getProductById(Integer id) {
-        Product product = productRepository.getProductById(id).orElseThrow(() -> new NoSuchElementException("Product not found with id = %d".formatted(id)));
+        Product product = productRepository
+                .getProductById(id)
+                .orElseThrow(() -> new NoSuchProductException("Product not found with id = %d".formatted(id)));
 
         return new ProductDto(product.getName(), product.getStockQuantity(), product.getPrice(), product.getCategory().getName());
     }
@@ -30,7 +33,7 @@ public class ProductService {
     @Transactional(readOnly = true)
     public Product findProduct(Integer id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Product not found with id = %d".formatted(id)));
+                .orElseThrow(() -> new NoSuchProductException("Product not found with id = %d".formatted(id)));
     }
 
     @Transactional(readOnly = true)
@@ -53,13 +56,30 @@ public class ProductService {
 
     @Transactional
     public void saveProduct(ProductDto productDto) {
+//        Product product = new Product();
+//        product.setName(productDto.getName());
+//        product.setPrice(productDto.getPrice());
+//        product.setStockQuantity(productDto.getStockQuantity());
+//
+//        Category category = categoryService.getCategoryByName(productDto.getCategory())
+//                .orElseGet(() -> {
+//                            Category newCategory = new Category();
+//                            newCategory.setName(productDto.getCategory());
+//                            return newCategory;
+//                        }
+//                );
+//        product.setCategory(category);
+
         Product product = productMapper.toEntity(productDto);
         productRepository.save(product);
+//        productRepository.save(product);
     }
 
     @Transactional
     public void addProductToStock(Integer id, Integer quantity) {
-        Product updatableProduct = productRepository.getProductById(id).orElseThrow(() -> new NoSuchElementException("Product not found with id = %d".formatted(id)));
+        Product updatableProduct = productRepository
+                .getProductById(id)
+                .orElseThrow(() -> new NoSuchProductException("Product not found with id = %d".formatted(id)));
 
         Integer stockQuantity = updatableProduct.getStockQuantity();
         updatableProduct.setStockQuantity(stockQuantity + quantity);
@@ -69,7 +89,7 @@ public class ProductService {
 
     @Transactional
     public void reduceProductFromStock(Integer id, Integer quantity) {
-        Product updatableProduct = productRepository.getProductById(id).orElseThrow(() -> new NoSuchElementException("Product not found with id = %d".formatted(id)));
+        Product updatableProduct = productRepository.getProductById(id).orElseThrow(() -> new NoSuchProductException("Product not found with id = %d".formatted(id)));
 
         Integer stockQuantity = updatableProduct.getStockQuantity();
         if (stockQuantity < quantity) {
@@ -83,9 +103,15 @@ public class ProductService {
 
     @Transactional
     public void updateProduct(Integer id, ProductDto productDto) {
-        Product udatableProduct = productRepository.getProductById(id).orElseThrow(() -> new NoSuchElementException("Product not found with id = %d".formatted(id)));
-
-        Category category = categoryService.getCategoryByName(productDto.category()).orElseThrow(() -> new NoSuchElementException("Category with id=%d not found".formatted(id)));
+        Product udatableProduct = productRepository
+                .getProductById(id)
+                .orElseThrow(() -> new NoSuchProductException("Product not found with id = %d".formatted(id)));
+//        udatableProduct.setName(productDto.getName());
+//        udatableProduct.setPrice(productDto.getPrice());
+//        udatableProduct.setStockQuantity(productDto.getStockQuantity());
+        Category category = categoryService
+                .getCategoryByName(productDto.category())
+                .orElseThrow(() -> new NoSuchCategoryException("Category with id=%d not found".formatted(id)));
         udatableProduct.setCategory(category);
         productMapper.update(udatableProduct, productDto);
         productRepository.save(udatableProduct);
@@ -94,7 +120,7 @@ public class ProductService {
     @Transactional
     public void deleteProduct(Integer id) {
         if (!productRepository.existsById(id)) {
-            throw new NoSuchElementException("Product with id=%d not found".formatted(id));
+            throw new NoSuchProductException("Product with id=%d not found".formatted(id));
         }
         productRepository.deleteById(id);
     }
