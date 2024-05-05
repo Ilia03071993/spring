@@ -15,6 +15,7 @@ public record CustomerDto(
         @Pattern(regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{6,20}$", message = "Your password should be 6 to 20 symbols")
         String password,
         @Valid
+        @NotNull(message = "Bank card not found")
         BankCardDto bankCard
 ) {
 }

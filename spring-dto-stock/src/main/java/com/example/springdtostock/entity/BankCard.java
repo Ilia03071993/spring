@@ -16,7 +16,7 @@ public class BankCard {
     private Integer id;
     private String name;
     private String number;
-    private Integer cvc;
+    private String cvc;
     private BigDecimal balance;
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "bankCard")

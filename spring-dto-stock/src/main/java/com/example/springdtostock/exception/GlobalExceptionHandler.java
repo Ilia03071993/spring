@@ -33,7 +33,11 @@ public class GlobalExceptionHandler
                 .body(new ErrorResponse(status.value(), "Validation error", list));
     }
 
-    @ExceptionHandler({NoSuchCustomerException.class, NoSuchProductException.class,NoSuchCategoryException.class, NoSuchBankCardException.class})
+    @ExceptionHandler({
+            NoSuchCustomerException.class,
+            NoSuchProductException.class,
+            NoSuchCategoryException.class,
+            NoSuchBankCardException.class})
     public ResponseEntity<ErrorResponse> handleNotFoundException(Exception ex) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)

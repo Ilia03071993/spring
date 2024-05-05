@@ -16,5 +16,5 @@ public interface CustomerMapper {
 
     List<CustomerDto> toDtoList(List<Customer> customers);
 
-    BankCard bankCardToBankCardDto(BankCard bankCard);
+    BankCard bankCardToBankCardDto(BankCardDto bankCard);
 }

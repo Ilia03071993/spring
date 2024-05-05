@@ -1,6 +1,7 @@
 package com.example.springdtostock.controller;
 
 import com.example.springdtostock.dto.BalanceDto;
+import com.example.springdtostock.dto.BankOperationDto;
 import com.example.springdtostock.dto.CustomerDto;
 import com.example.springdtostock.service.CustomerService;
 import jakarta.validation.Valid;
@@ -47,19 +48,32 @@ public class CustomerController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{id}/replenish-balance/{money}")
-    public ResponseEntity<?> replenishmentBalance(@PathVariable Integer id,
-                                                  @PathVariable BigDecimal money) {
-        customerService.replenishmentBalance(id, money);
+    @PutMapping("/replenish-balance/")
+    public ResponseEntity<?> replenishmentBalance(@RequestBody BankOperationDto bankOperationDto) {
+        customerService.replenishmentBalance(bankOperationDto.getId(), bankOperationDto.getMoney());
+
+        return ResponseEntity.ok().build();
+    }
+//    @PutMapping("/{id}/replenish-balance/{money}")
+//    public ResponseEntity<?> replenishmentBalance(@PathVariable Integer id,
+//                                                  @PathVariable BigDecimal money) {
+//        customerService.replenishmentBalance(id, money);
+//
+//        return ResponseEntity.ok().build();
+//    }
+
+    @PutMapping("/withdraw-balance/")
+    public ResponseEntity<?> withdrawMoney(@RequestBody BankOperationDto bankOperationDto) {
+        customerService.withdrawMoney(bankOperationDto.getId(), bankOperationDto.getMoney());
 
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{id}/withdraw-balance/{money}")
-    public ResponseEntity<?> withdrawMoney(@PathVariable Integer id,
-                                           @PathVariable BigDecimal money) {
-        customerService.withdrawMoney(id, money);
-
-        return ResponseEntity.ok().build();
-    }
+//    @PutMapping("/{id}/withdraw-balance/{money}")
+//    public ResponseEntity<?> withdrawMoney(@PathVariable Integer id,
+//                                           @PathVariable BigDecimal money) {
+//        customerService.withdrawMoney(id, money);
+//
+//        return ResponseEntity.ok().build();
+//    }
 }
