@@ -1,14 +1,11 @@
 package com.example.springdtostock.service;
 
 import com.example.springdtostock.dto.BalanceDto;
-import com.example.springdtostock.dto.BankCardDto;
 import com.example.springdtostock.dto.CustomerDto;
-import com.example.springdtostock.entity.BankCard;
 import com.example.springdtostock.entity.Customer;
 import com.example.springdtostock.exception.NoSuchBankCardException;
 import com.example.springdtostock.exception.NoSuchCustomerException;
 import com.example.springdtostock.repository.CustomerRepository;
-import com.example.springdtostock.service.maper.BankCardMapper;
 import com.example.springdtostock.service.maper.CustomerMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -61,6 +57,7 @@ public class CustomerService {
         Customer customer = customerMapper.toEntity(customerDto);
         customerRepository.save(customer);
     }
+
     @Transactional
     public void replenishmentBalance(Integer id, BigDecimal money) {
         Customer customer = customerRepository
