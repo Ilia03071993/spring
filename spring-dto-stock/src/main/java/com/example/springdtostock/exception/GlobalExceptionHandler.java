@@ -37,7 +37,8 @@ public class GlobalExceptionHandler
             NoSuchCustomerException.class,
             NoSuchProductException.class,
             NoSuchCategoryException.class,
-            NoSuchBankCardException.class})
+            NoSuchBankCardException.class,
+            NoSuchUserException.class})
     public ResponseEntity<ErrorResponse> handleNotFoundException(Exception ex) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)

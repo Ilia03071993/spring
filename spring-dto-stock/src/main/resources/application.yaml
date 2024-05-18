@@ -1,4 +1,5 @@
 spring:
+#  profile: inMemory
   datasource:
     url: jdbc:mysql://localhost:3306/stock
     username: root

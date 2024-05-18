@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,5 +25,13 @@ public class ApplicationUser {
 
     private String email;
 
-    private String role;
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id",
+                    foreignKey = @ForeignKey(name = "user_fk_constraint"))},
+            inverseJoinColumns = {@JoinColumn(name = "role_id",referencedColumnName = "id",
+                    foreignKey = @ForeignKey(name = "role_fk_constraint"))}
+    )
+    private Set<Role> roles;
 }

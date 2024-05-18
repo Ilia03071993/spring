@@ -3,11 +3,9 @@ package com.example.springdtostock.config;
 import com.example.springdtostock.entity.ApplicationUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Set;
 
 @RequiredArgsConstructor
 public class SecurityUser implements UserDetails {
@@ -15,8 +13,12 @@ public class SecurityUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        SimpleGrantedAuthority role = new SimpleGrantedAuthority(user.getRole());
-        return Set.of(role);
+        return user.getRoles()
+                .stream()
+                .map(role -> new SecurityRole(role))
+                .toList();
+//        SimpleGrantedAuthority role = new SimpleGrantedAuthority(user.getRole());
+//        return Set.of(role);
     }
 
     @Override

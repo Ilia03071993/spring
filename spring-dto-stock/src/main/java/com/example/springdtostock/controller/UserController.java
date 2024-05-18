@@ -1,28 +1,54 @@
 package com.example.springdtostock.controller;
 
 import com.example.springdtostock.dto.UserDto;
-import com.example.springdtostock.entity.ApplicationUser;
-import com.example.springdtostock.repository.ApplicationUserRepository;
+import com.example.springdtostock.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 public class UserController {
-    private final PasswordEncoder passwordEncoder;
-    private final ApplicationUserRepository userRepository;
+    private final UserService userService;
 
-    @GetMapping("/register")
-    public void createUser(@RequestBody UserDto userDto) {
-        ApplicationUser applicationUser = new ApplicationUser();
-        applicationUser.setUsername(userDto.username());
-        applicationUser.setRole(userDto.role());
-        applicationUser.setPassword(passwordEncoder.encode(userDto.rawPassword()));
+    @PostMapping("/register")
+    public ResponseEntity<?> createUser(@RequestBody UserDto userDto) {
+        userService.createUser(userDto);
 
-        userRepository.save(applicationUser);
+        return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/api/user/save")
+    public ResponseEntity<?> save(@RequestBody UserDto userDto) {
+        userService.createUser(userDto);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("/api/user/{id}/update-password")
+    public ResponseEntity<?> updatePassword(@PathVariable Integer id, @RequestBody UserDto userDto) {
+        userService.updatePassword(id, userDto.rawPassword());
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("/api/user/{id}/update-role")
+    public ResponseEntity<?> addRoleByUserId(@PathVariable Integer id, @RequestBody UserDto userDto) {
+        userService.addRoleByUserId(id, userDto.role());
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/api/user/{userId}/role/{roleId}/remove")
+    public ResponseEntity<?> deleteRoleByUserId(@PathVariable Integer userId,
+                                                @PathVariable Integer roleId) {
+        userService.deleteRoleByUserId(userId, roleId);
+
+        return ResponseEntity.ok().build();
+    }
 }
