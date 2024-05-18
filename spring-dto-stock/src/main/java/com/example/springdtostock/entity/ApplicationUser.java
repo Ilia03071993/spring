@@ -25,6 +25,8 @@ public class ApplicationUser {
 
     private String email;
 
+    private boolean isBlocked;
+
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_roles",

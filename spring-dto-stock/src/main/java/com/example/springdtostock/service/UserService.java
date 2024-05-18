@@ -76,4 +76,22 @@ public class UserService {
                     userRepository.save(applicationUser);
                 });
     }
+
+    @Transactional
+    public void userBlocked(Integer id) {
+        userRepository.findById(id).ifPresent(
+                applicationUser -> {
+                    applicationUser.setBlocked(true);
+                }
+        );
+    }
+
+    @Transactional
+    public void userUnBlocked(Integer id) {
+        userRepository.findById(id).ifPresent(
+                applicationUser -> {
+                    applicationUser.setBlocked(false);
+                }
+        );
+    }
 }

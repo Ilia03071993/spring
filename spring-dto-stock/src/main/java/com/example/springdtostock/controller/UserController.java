@@ -51,4 +51,20 @@ public class UserController {
 
         return ResponseEntity.ok().build();
     }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("/api/user/{id}/block")
+    public ResponseEntity<?> userBlock(@PathVariable Integer id) {
+        userService.userBlocked(id);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("/api/user/{id}/unblock")
+    public ResponseEntity<?> userUnBlock(@PathVariable Integer id) {
+        userService.userUnBlocked(id);
+
+        return ResponseEntity.ok().build();
+    }
 }
