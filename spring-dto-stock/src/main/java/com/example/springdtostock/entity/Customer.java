@@ -12,9 +12,13 @@ public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     private String name;
+
     private Integer age;
+
     private String email;
+
     private String password;
 
     @OneToOne(cascade = CascadeType.ALL)

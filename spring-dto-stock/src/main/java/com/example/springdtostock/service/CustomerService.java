@@ -43,17 +43,6 @@ public class CustomerService {
 
     @Transactional
     public void saveCustomer(CustomerDto customerDto) {
-//        if (customerDto.bankCard() == null) {
-//            throw new NoSuchBankCardException("Bank card not found on customer name = %s".formatted(customerDto.name()));
-//        }
-        //            BankCard bankCard = new BankCard();
-//            bankCard.setName(bankCardDto.name());
-//            bankCard.setNumber(bankCardDto.number());
-//            bankCard.setCvc(bankCardDto.cvc());
-//            bankCard.setBalance(bankCardDto.balance());
-//
-//
-//            customer.setBankCard(bankCard);
         Customer customer = customerMapper.toEntity(customerDto);
         customerRepository.save(customer);
     }

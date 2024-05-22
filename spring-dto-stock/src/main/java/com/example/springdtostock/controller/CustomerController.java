@@ -53,13 +53,6 @@ public class CustomerController {
 
         return ResponseEntity.ok().build();
     }
-//    @PutMapping("/{id}/replenish-balance/{money}")
-//    public ResponseEntity<?> replenishmentBalance(@PathVariable Integer id,
-//                                                  @PathVariable BigDecimal money) {
-//        customerService.replenishmentBalance(id, money);
-//
-//        return ResponseEntity.ok().build();
-//    }
 
     @PutMapping("/withdraw-balance/")
     public ResponseEntity<?> withdrawMoney(@RequestBody BankOperationDto bankOperationDto) {
@@ -67,12 +60,4 @@ public class CustomerController {
 
         return ResponseEntity.ok().build();
     }
-
-//    @PutMapping("/{id}/withdraw-balance/{money}")
-//    public ResponseEntity<?> withdrawMoney(@PathVariable Integer id,
-//                                           @PathVariable BigDecimal money) {
-//        customerService.withdrawMoney(id, money);
-//
-//        return ResponseEntity.ok().build();
-//    }
 }

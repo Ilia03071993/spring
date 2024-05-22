@@ -69,10 +69,8 @@ public class ProductService {
 //                        }
 //                );
 //        product.setCategory(category);
-
         Product product = productMapper.toEntity(productDto);
         productRepository.save(product);
-//        productRepository.save(product);
     }
 
     @Transactional
@@ -106,9 +104,7 @@ public class ProductService {
         Product udatableProduct = productRepository
                 .getProductById(id)
                 .orElseThrow(() -> new NoSuchProductException("Product not found with id = %d".formatted(id)));
-//        udatableProduct.setName(productDto.getName());
-//        udatableProduct.setPrice(productDto.getPrice());
-//        udatableProduct.setStockQuantity(productDto.getStockQuantity());
+
         Category category = categoryService
                 .getCategoryByName(productDto.category())
                 .orElseThrow(() -> new NoSuchCategoryException("Category with id=%d not found".formatted(id)));

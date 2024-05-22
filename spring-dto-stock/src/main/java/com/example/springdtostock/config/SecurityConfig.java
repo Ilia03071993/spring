@@ -37,17 +37,11 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-
-    //    @Profile("db")
-//    @ConditionalOnProperty(value = "profile", havingValue = "db")
     @Bean
     public UserDetailsService userDetailsService(ApplicationUserRepository userRepository) {
         return new CustomUserDetailsService(userRepository);
     }
 
-
-    //    @Profile("db")
-//    @ConditionalOnProperty(value = "profile", havingValue = "db")
     @Bean
     public DaoAuthenticationProvider dbDaoAuthenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -62,29 +56,16 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/register").permitAll()
-//                        .requestMatchers(HttpMethod.GET).hasAnyRole("USER", "ADMIN")
-//                        .requestMatchers(HttpMethod.POST, "/api/hello").hasRole("ADMIN")
+                        .requestMatchers("/api/admin/users/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET).hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST).hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT).hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH).hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE).hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(Customizer.withDefaults());
 
         return httpSecurity.build();
     }
-
-
-//    @Bean
-//    @ConditionalOnProperty(value = "profile", havingValue = "inMemory")
-//    @Profile("inMemory")
-//    public UserDetailsService inMemoryDaoAuthenticationProvider() {
-//        InMemoryUserDetailsManager uds = new InMemoryUserDetailsManager();
-//        UserDetails user = User
-//                .withUsername("Linda")
-//                .password(passwordEncoder().encode("124"))
-//                .roles("ADMIN")
-//                .authorities("READ", "WRITE")
-//                .build();
-//        uds.createUser(user);
-//
-//        return uds;
-//    }
 }

@@ -17,8 +17,6 @@ public class SecurityUser implements UserDetails {
                 .stream()
                 .map(role -> new SecurityRole(role))
                 .toList();
-//        SimpleGrantedAuthority role = new SimpleGrantedAuthority(user.getRole());
-//        return Set.of(role);
     }
 
     @Override

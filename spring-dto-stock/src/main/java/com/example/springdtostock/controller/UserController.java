@@ -2,9 +2,9 @@ package com.example.springdtostock.controller;
 
 import com.example.springdtostock.dto.UserDto;
 import com.example.springdtostock.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,38 +13,34 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> createUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<?> createUser(@RequestBody @Valid UserDto userDto) {
         userService.createUser(userDto);
 
         return ResponseEntity.ok().build();
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping("/api/user/save")
-    public ResponseEntity<?> save(@RequestBody UserDto userDto) {
+    @PostMapping("/api/admin/users/save")
+    public ResponseEntity<?> save(@RequestBody @Valid UserDto userDto) {
         userService.createUser(userDto);
 
         return ResponseEntity.ok().build();
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PutMapping("/api/user/{id}/update-password")
+    @PutMapping("/api/admin/users/{id}/update-password")
     public ResponseEntity<?> updatePassword(@PathVariable Integer id, @RequestBody UserDto userDto) {
-        userService.updatePassword(id, userDto.rawPassword());
+        userService.updatePassword(id, userDto);
 
         return ResponseEntity.ok().build();
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PutMapping("/api/user/{id}/update-role")
-    public ResponseEntity<?> addRoleByUserId(@PathVariable Integer id, @RequestBody UserDto userDto) {
-        userService.addRoleByUserId(id, userDto.role());
+    @PutMapping("/api/admin/users/{id}/update-role")
+    public ResponseEntity<?> addRoleByUserId(@PathVariable Integer id, @RequestBody @Valid UserDto userDto) {
+        userService.addRoleByUserId(id, userDto);
 
         return ResponseEntity.ok().build();
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @DeleteMapping("/api/user/{userId}/role/{roleId}/remove")
+    @DeleteMapping("/api/admin/users/{userId}/role/{roleId}/remove")
     public ResponseEntity<?> deleteRoleByUserId(@PathVariable Integer userId,
                                                 @PathVariable Integer roleId) {
         userService.deleteRoleByUserId(userId, roleId);
@@ -52,18 +48,16 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PutMapping("/api/user/{id}/block")
-    public ResponseEntity<?> userBlock(@PathVariable Integer id) {
-        userService.userBlocked(id);
+    @PutMapping("/api/admin/users/{id}/block")
+    public ResponseEntity<?> blockUser(@PathVariable Integer id) {
+        userService.blockUser(id);
 
         return ResponseEntity.ok().build();
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PutMapping("/api/user/{id}/unblock")
-    public ResponseEntity<?> userUnBlock(@PathVariable Integer id) {
-        userService.userUnBlocked(id);
+    @PutMapping("/api/admin/users/{id}/unblock")
+    public ResponseEntity<?> unblockUser(@PathVariable Integer id) {
+        userService.unblockUser(id);
 
         return ResponseEntity.ok().build();
     }

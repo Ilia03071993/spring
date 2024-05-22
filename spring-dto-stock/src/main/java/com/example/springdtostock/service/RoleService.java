@@ -1,6 +1,5 @@
 package com.example.springdtostock.service;
 
-import com.example.springdtostock.dto.UserDto;
 import com.example.springdtostock.entity.Role;
 import com.example.springdtostock.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;

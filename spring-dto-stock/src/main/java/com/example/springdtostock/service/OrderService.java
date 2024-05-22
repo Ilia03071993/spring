@@ -70,11 +70,4 @@ public class OrderService {
         orderResponse.setOrderStatus(orderStatus);
         return orderResponse;
     }
-
-//    private OrderDto converterToOrderDto(Order order) {
-//        OrderDto orderDto = new OrderDto();
-//        orderDto.setName(order.getName());
-//        return orderDto;
-//    }
-
 }
