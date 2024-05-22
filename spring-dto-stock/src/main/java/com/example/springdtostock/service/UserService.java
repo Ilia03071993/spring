@@ -54,11 +54,7 @@ public class UserService {
 
     @Transactional
     public void deleteRoleByUserId(Integer userId, Integer roleId) {
-//        ApplicationUser user = userRepository.findById(userId)
-//                .orElseThrow(() -> new NoSuchUserException("User with id = %d not found".formatted(userId)));
-//        user.getRoles().removeIf(role -> role.getId().equals(roleId));
-//        userRepository.save(user);
-        userRepository.findById(userId).ifPresent(
+        userRepository.findApplicationUserById(userId).ifPresent(
                 applicationUser -> {
                     applicationUser
                             .getRoles()
