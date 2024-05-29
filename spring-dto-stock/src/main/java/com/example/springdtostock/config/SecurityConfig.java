@@ -36,29 +36,6 @@ public class SecurityConfig {
     //4. AuthorizationFilter: @PreAuthorize & @PostAuthorize
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService(ApplicationUserRepository userRepository) {
-        return new CustomUserDetailsService(userRepository);
-    }
-
-    @Bean
-    public DaoAuthenticationProvider dbDaoAuthenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(passwordEncoder());
-        provider.setUserDetailsService(userDetailsService);
-        return provider;
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
-    }
-
-    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authManager) throws Exception {
         httpSecurity
                 .securityContext(ctx -> ctx.requireExplicitSave(false))
@@ -81,5 +58,28 @@ public class SecurityConfig {
 //                .formLogin(Customizer.withDefaults());
 
         return httpSecurity.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService(ApplicationUserRepository userRepository) {
+        return new CustomUserDetailsService(userRepository);
+    }
+
+    @Bean
+    public DaoAuthenticationProvider dbDaoAuthenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(passwordEncoder());
+        provider.setUserDetailsService(userDetailsService);
+        return provider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
     }
 }

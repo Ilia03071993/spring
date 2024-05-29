@@ -2,9 +2,9 @@ package com.example.springdtostock.service;
 
 import com.example.springdtostock.dto.UserDto;
 import com.example.springdtostock.entity.ApplicationUser;
+import com.example.springdtostock.entity.Role;
 import com.example.springdtostock.exception.NoSuchUserException;
 import com.example.springdtostock.repository.ApplicationUserRepository;
-import com.example.springdtostock.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,13 +17,13 @@ import java.util.Set;
 public class UserService {
     private final ApplicationUserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final RoleRepository roleRepository;
+    private final RoleService roleService;
 
     @Transactional
     public void createUser(UserDto userDto) {
         ApplicationUser applicationUser = new ApplicationUser();
         applicationUser.setUsername(userDto.username());
-        applicationUser.setRoles(Set.of(roleRepository.findRoleByName(userDto.role()).orElseThrow()));
+        applicationUser.setRoles(Set.of(roleService.findRoleByName(userDto)));
         applicationUser.setPassword(passwordEncoder.encode(userDto.rawPassword()));
 
         userRepository.save(applicationUser);
@@ -44,12 +44,9 @@ public class UserService {
         ApplicationUser applicationUser = userRepository.findById(id).orElseThrow(() ->
                 new NoSuchUserException("User with id = %d not found".formatted(id)));
 
-        roleRepository.findRoleByName(userDto.role()).ifPresent(
-                role -> {
-                    applicationUser.getRoles().add(role);
-                    userRepository.save(applicationUser);
-                }
-        );
+        Role role = roleService.findRoleByName(userDto);
+        applicationUser.getRoles().add(role);
+        userRepository.save(applicationUser);
     }
 
     @Transactional

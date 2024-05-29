@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,7 +30,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @SneakyThrows
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
-        if (!"POST".equals(request.getMethod())) {
+
+        if (!HttpMethod.POST.name().equals(request.getMethod())) {
             throw new AuthenticationServiceException("Only POST method is allowed");
         }
 
@@ -51,7 +53,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         AuthenticationResultResponse resultResponse = new AuthenticationResultResponse(HttpStatus.OK.name(),
                 authResult.getName());
 
-        response.setContentType("application/json");
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
         MAPPER.writeValue(response.getOutputStream(), resultResponse);
     }
