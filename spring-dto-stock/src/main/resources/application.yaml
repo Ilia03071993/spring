@@ -1,5 +1,5 @@
 spring:
-#  profile: inMemory
+  #  profile: inMemory
   datasource:
     url: jdbc:mysql://localhost:3306/stock
     username: root
@@ -9,6 +9,16 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: update
+
+jwt:
+  config:
+    secret: 'c2VjcmV0X3NlY3JldF9zZWNyZXRfc2VjcmV0X3NlY3JldA=='
+    tokenExpirationMs: 60_000
+    refreshTokenExpirationMs: 3600_000
+    #  15min - 2h
+    #  1min = 60s = 60_000ms
+    # 10min = 600_000ms
+    # 60 min 3600_000ms
     properties:
       hibernate:
         show_sql: true

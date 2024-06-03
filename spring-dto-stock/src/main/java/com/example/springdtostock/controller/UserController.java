@@ -25,7 +25,9 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String principal = authentication.getName();
 
-        return new UserDto(principal, null, authentication.getAuthorities().stream().map(r -> r.getAuthority()).toString());
+        return new UserDto(principal, null, authentication.getAuthorities().stream().map(r -> r.getAuthority())
+                .findFirst()
+                .orElseThrow());
     }
 
     @PostMapping("/register")

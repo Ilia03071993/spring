@@ -1,7 +1,7 @@
-package com.example.springdtostock.config;
+package com.example.springdtostock.config.jwt;
 
 import com.example.springdtostock.dto.AuthRequest;
-import com.example.springdtostock.dto.AuthenticationResultResponse;
+import com.example.springdtostock.dto.AuthResponse;
 import com.example.springdtostock.dto.ErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -17,29 +17,31 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @RequiredArgsConstructor
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private static final ObjectMapper MAPPER = new ObjectMapper();
+
     private final AuthenticationManager authManager;
+    private final JwtUtil jwtUtil;
 
     @Override
     @SneakyThrows
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
-
+        // Проверка метода запроса
         if (!HttpMethod.POST.name().equals(request.getMethod())) {
             throw new AuthenticationServiceException("Only POST method is allowed");
         }
-
+        // Чтение данных аутентификации из тела запроса
         AuthRequest authRequest = MAPPER.readValue(request.getInputStream(), AuthRequest.class);
 
+        // Создание объекта UsernamePasswordAuthenticationToken с данными пользователя
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                 authRequest.username(), authRequest.password()
         );
+        // Аутентификация пользователя
         return authManager.authenticate(authentication);
     }
 
@@ -47,15 +49,14 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                             FilterChain chain, Authentication authResult) {
-        SecurityContext context = SecurityContextHolder.getContext();
-        context.setAuthentication(authResult);
-
-        AuthenticationResultResponse resultResponse = new AuthenticationResultResponse(HttpStatus.OK.name(),
-                authResult.getName());
-
+        String accessToken = jwtUtil.createAccessToken(authResult.getName(), authResult.getAuthorities());
+        String refreshToken = jwtUtil.createRefreshToken(authResult.getName(), authResult.getAuthorities());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
-        MAPPER.writeValue(response.getOutputStream(), resultResponse);
+        MAPPER.writeValue(
+                response.getOutputStream(),
+                new AuthResponse("success", authResult.getName(), accessToken, refreshToken)
+        );
     }
 
     @SneakyThrows

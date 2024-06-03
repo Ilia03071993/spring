@@ -1,5 +1,9 @@
 package com.example.springdtostock.config;
 
+import com.example.springdtostock.config.jwt.CustomAuthenticationFilter;
+import com.example.springdtostock.config.jwt.JwtUtil;
+import com.example.springdtostock.config.jwt.JwtValidationFilter;
+import com.example.springdtostock.config.jwt.RefreshTokenFilter;
 import com.example.springdtostock.repository.ApplicationUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +15,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +28,7 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
+    private final JwtUtil jwtUtil;
 
     //login
     // log pas
@@ -34,11 +40,15 @@ public class SecurityConfig {
     //2. AuthorizationFilter
     //3. CsrfFilter
     //4. AuthorizationFilter: @PreAuthorize & @PostAuthorize
+    //5. JwtValidationFilter
+    // ...
+    //6. Controller
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authManager) throws Exception {
         httpSecurity
-                .securityContext(ctx -> ctx.requireExplicitSave(false))
+//              .securityContext(ctx -> ctx.requireExplicitSave(false))
+                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/register").permitAll()
@@ -52,7 +62,9 @@ public class SecurityConfig {
                 )
 //                .httpBasic(Customizer.withDefaults());
                 .exceptionHandling(e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
-                .addFilter(new CustomAuthenticationFilter(authManager))
+                .addFilter(new CustomAuthenticationFilter(authManager, jwtUtil))
+                .addFilterAfter(new JwtValidationFilter(jwtUtil), CustomAuthenticationFilter.class)
+                .addFilterAfter(new RefreshTokenFilter(jwtUtil), JwtValidationFilter.class)
                 .httpBasic(b -> b.disable())
                 .formLogin(l -> l.disable());
 //                .formLogin(Customizer.withDefaults());
