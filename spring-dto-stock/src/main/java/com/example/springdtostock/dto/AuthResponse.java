@@ -8,6 +8,6 @@ public record AuthResponse(
         String username,
 
         String accessToken,
-        String responseToken
+        String refreshToken
 ) {
 }
