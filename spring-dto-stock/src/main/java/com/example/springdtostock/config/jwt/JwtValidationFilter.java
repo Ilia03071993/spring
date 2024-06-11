@@ -59,7 +59,7 @@ public class JwtValidationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String url = request.getRequestURI();
-        return "/login".equals(url) || "/api/refresh-token".equals(url);
+        return "/login".equals(url) || "/register".equals(url);
     }
 
     private String obtainToken(HttpServletRequest request) {

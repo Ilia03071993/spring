@@ -29,12 +29,12 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
                 UserTokenInfo userTokenInfo = jwtUtil.validateToken(refreshToken);
 
                 // Генерируем новые AccessToken и RefreshToken
-                String newAccessToken = jwtUtil.createAccessToken(userTokenInfo.Username(), userTokenInfo.authorities());
-                String newRefreshToken = jwtUtil.createRefreshToken(userTokenInfo.Username(), userTokenInfo.authorities());
+                String newAccessToken = jwtUtil.createAccessToken(userTokenInfo.username(), userTokenInfo.authorities());
+                String newRefreshToken = jwtUtil.createRefreshToken(userTokenInfo.username(), userTokenInfo.authorities());
 
                 // Отправляем новые токены в ответе
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                AuthResponse authResponse = new AuthResponse("success", userTokenInfo.Username(), newAccessToken, newRefreshToken);
+                AuthResponse authResponse = new AuthResponse("success", userTokenInfo.username(), newAccessToken, newRefreshToken);
                 MAPPER.writeValue(response.getOutputStream(), authResponse);
             } catch (Exception e) {
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
