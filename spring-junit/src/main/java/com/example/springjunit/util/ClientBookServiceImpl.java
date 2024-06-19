@@ -8,6 +8,10 @@ import java.util.*;
 public class ClientBookServiceImpl implements ClientBookService {
     private Map<String, Client> clientsMap = new HashMap<>();
 
+    public Map<String, Client> getClientsMap() {
+        return clientsMap;
+    }
+
     @Override
     public List<Client> getAllClients() {
         return new ArrayList<>(clientsMap.values());
@@ -44,10 +48,6 @@ public class ClientBookServiceImpl implements ClientBookService {
     @Override
     public void deleteClient(String phone) {
         clientsMap.remove(phone);
-    }
-
-    public void clear() {
-        clientsMap.clear();
     }
 }
 

@@ -4,7 +4,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.ReflectionUtils;
 
+import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -17,7 +20,7 @@ class ClientBookServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        clientBookServiceImpl.clear();
+       clientBookServiceImpl.getClientsMap().clear();
     }
 
     @Test
@@ -66,7 +69,7 @@ class ClientBookServiceImplTest {
         addElementsToMap();
         Client client = new Client("89160976967", "Ilia");
         clientBookServiceImpl.updateClient("89160976967", client);
-        
+
         assertEquals(client, clientBookServiceImpl.getClientByPhone("89160976967"));
     }
 
