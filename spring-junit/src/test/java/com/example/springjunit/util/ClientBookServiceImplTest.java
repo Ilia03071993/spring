@@ -66,9 +66,7 @@ class ClientBookServiceImplTest {
         addElementsToMap();
         Client client = new Client("89160976967", "Ilia");
         clientBookServiceImpl.updateClient("89160976967", client);
-        for (Client client1 : clientBookServiceImpl.getAllClients()) {
-            System.out.println(client1.getName());
-        }
+        
         assertEquals(client, clientBookServiceImpl.getClientByPhone("89160976967"));
     }
 
