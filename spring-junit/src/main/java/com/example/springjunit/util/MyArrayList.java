@@ -11,6 +11,18 @@ public class MyArrayList implements Iterable<Integer> {
     private int capacity = 10;
     private int size = 0;
 
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
     public MyArrayList() {
         this.arr = new Integer[this.capacity];
     }
