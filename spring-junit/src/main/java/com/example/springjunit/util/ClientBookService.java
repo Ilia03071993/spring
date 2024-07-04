@@ -1,5 +1,7 @@
 package com.example.springjunit.util;
 
+import com.example.springjunit.entity.Client;
+
 import java.util.List;
 
 public interface ClientBookService {
@@ -7,9 +9,9 @@ public interface ClientBookService {
 
     Client getClientByPhone(String phone);
 
-    void addClient(Client client);
+    void addClient(com.example.springjunit.entity.Client client);
 
-    void updateClient(String phone, Client client);
+    void updateClient(String phone, com.example.springjunit.entity.Client client);
 
     void deleteClient(String phone);
 }
