@@ -1,9 +1,11 @@
 package com.example.springjunit.service;
 
+import com.example.springjunit.dto.ClientDto;
 import com.example.springjunit.dto.OrderDto;
 import com.example.springjunit.entity.Client;
 import com.example.springjunit.entity.Order;
 import com.example.springjunit.repository.OrderRepository;
+import com.example.springjunit.service.mapper.ClientMapper;
 import com.example.springjunit.service.mapper.OrderMapper;
 import com.example.springjunit.util.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ public class JpaOrderService implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
     private final JpaClientBookService jpaClientBookService;
+    private final ClientMapper clientMapper;
 
     @Override
     public List<OrderDto> getAllClientOrders(Integer clientId) {
@@ -27,17 +30,22 @@ public class JpaOrderService implements OrderService {
 
     @Override
     public void addOrderToClient(OrderDto orderDto, Integer clientId) {
-        Client client = jpaClientBookService.getClientById(clientId);
+        ClientDto clientDto = jpaClientBookService.getClientById(clientId);
+        Client client = clientMapper.toEntity(clientDto);
+
         Order order = orderMapper.toEntity(orderDto);
         order.setClient(client);
+
         client.getOrders().add(order);
 
-        jpaClientBookService.save(client);
+        jpaClientBookService.save(clientMapper.toDto(client));
     }
 
     @Override
     public void deleteOrderFromClient(Integer oderId, Integer clientId) {
-        Client client = jpaClientBookService.getClientById(clientId);
+        ClientDto clientDto = jpaClientBookService.getClientById(clientId);
+        Client client = clientMapper.toEntity(clientDto);
+
         Order orderRemove = client.getOrders().get(oderId);
 
         client.getOrders().remove(orderRemove);

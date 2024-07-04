@@ -1,9 +1,11 @@
 package com.example.springjunit.service;
 
+import com.example.springjunit.dto.ClientDto;
 import com.example.springjunit.entity.Client;
 import com.example.springjunit.entity.Order;
 import com.example.springjunit.exception.NoSuchClientException;
 import com.example.springjunit.repository.ClientRepository;
+import com.example.springjunit.service.mapper.ClientMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -30,6 +32,9 @@ class JpaClientBookServiceTest {
     @MockBean
     ClientRepository clientRepository;
 
+    @MockBean
+    ClientMapper clientMapper;
+
     @Captor
     private ArgumentCaptor<Client> captor;
 
@@ -51,6 +56,31 @@ class JpaClientBookServiceTest {
 
         int result = clientRepository.findAll().size();
         assertEquals(clients.size(), result);
+    }
+
+    @Test
+    void getClientById_IfCorrectId() {
+        Client client = Client.builder()
+                .id(1)
+                .name("Fill")
+                .phone("89160976967")
+                .build();
+
+        when(clientRepository.findById(1))
+                .thenReturn(Optional.ofNullable(client));
+
+        Client checkClient = clientRepository.findById(1).orElseThrow();
+        assertEquals(client, checkClient);
+    }
+
+    @Test
+    void getClientById_IfIncorrectId() {
+        Integer id = 4;
+        NoSuchClientException ex = assertThrows(NoSuchClientException.class,
+                () -> jpaClientBookService.getClientById(id)
+        );
+        String exMessage = "Client with id = %d not found".formatted(id);
+        assertEquals(exMessage, ex.getMessage());
     }
 
     @Test
@@ -117,18 +147,22 @@ class JpaClientBookServiceTest {
                         .build()
         ));
         Client client = new Client(1, "Fill", "89159977566", orders);
+        ClientDto clientDto = new ClientDto("Fill", "89159977566");
 
-        when(clientRepository.save(client))
+        when(clientMapper.toEntity(any(ClientDto.class)))
                 .thenReturn(client);
 
-        jpaClientBookService.addClient(client);
+        when(clientRepository.save(any(Client.class)))
+                .thenReturn(client);
+
+        jpaClientBookService.addClient(clientDto);
 
         verify(clientRepository).save(captor.capture());
 
         Client captorValue = captor.getValue();
 
-        assertEquals(client.getName(), captorValue.getName());
-        assertEquals(client.getPhone(), captorValue.getPhone());
+        assertEquals(clientDto.name(), captorValue.getName());
+        assertEquals(clientDto.phone(), captorValue.getPhone());
     }
 
     @Test
@@ -144,15 +178,16 @@ class JpaClientBookServiceTest {
                         .build()
         ));
         Client client = new Client(1, "Fill", null, orders);
+
         when(clientRepository.save(client))
                 .thenReturn(client);
 
         assertThrows(NullPointerException.class,
-                () -> jpaClientBookService.addClient(client),
+                () -> jpaClientBookService.addClient(clientMapper.toDto(client)),
                 "Phone number cannot be null"
         );
 
-        // Убедитесь, что метод save не был вызван
+        //удостовериться метод save не был вызван
         verify(clientRepository, never()).save(any(Client.class));
     }
 
@@ -169,14 +204,14 @@ class JpaClientBookServiceTest {
                         .build()
         ));
         Client updatableClient = new Client(1, "Fill", "89159977566", orders);
-        Client client = new Client(1, "Jake", "89160976967", orders);
+        ClientDto clientDtoNew = new ClientDto("Jake", "89160976967");
         String phone = "89159977566";
         // Настройка mock для метода getClientByPhone
         when(clientRepository.getClientByPhone(phone))
                 .thenReturn(Optional.of(updatableClient));
 
         // Вызов тестируемого метода
-        jpaClientBookService.updateClient(phone, client);
+        jpaClientBookService.updateClient(phone, clientDtoNew);
 
         // Проверка, что метод getClientByPhone был вызван с правильным номером телефона
         verify(clientRepository).getClientByPhone(phone);
@@ -191,22 +226,11 @@ class JpaClientBookServiceTest {
 
     @Test
     void updateClient_shouldThrowIllegalArgumentException_ifNullPhone() {
-        List<Order> orders = new ArrayList<>(List.of(
-                Order.builder()
-                        .id(1)
-                        .name("Product")
-                        .build(),
-                Order.builder()
-                        .id(2)
-                        .name("Cleaner")
-                        .build()
-        ));
-        Client client = new Client(1, "Jake", "89160976967", orders);
         String phone = null;
-
+        ClientDto clientDto = new ClientDto("Jake", "89160976967");
         IllegalArgumentException ex = assertThrows(
                 IllegalArgumentException.class,
-                () -> jpaClientBookService.updateClient(phone, client)
+                () -> jpaClientBookService.updateClient(phone, clientDto)
         );
         assertEquals("Phone number cannot be null or blank",
                 ex.getMessage()
@@ -231,9 +255,10 @@ class JpaClientBookServiceTest {
         when(clientRepository.getClientByPhone(phone))
                 .thenReturn(Optional.empty());
 
+        ClientDto clientDto1 = clientMapper.toDto(client);
         NoSuchClientException ex = assertThrows(
                 NoSuchClientException.class,
-                () -> jpaClientBookService.updateClient(phone, client)
+                () -> jpaClientBookService.updateClient(phone, clientDto1)
         );
         assertEquals("Client with phone = %s not found".formatted(phone),
                 ex.getMessage()
