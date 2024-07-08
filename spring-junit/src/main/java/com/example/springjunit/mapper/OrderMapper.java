@@ -1,4 +1,4 @@
-package com.example.springjunit.service.mapper;
+package com.example.springjunit.mapper;
 
 import com.example.springjunit.dto.OrderDto;
 import com.example.springjunit.entity.Order;

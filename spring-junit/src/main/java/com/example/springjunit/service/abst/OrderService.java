@@ -1,4 +1,4 @@
-package com.example.springjunit.util;
+package com.example.springjunit.service.abst;
 
 import com.example.springjunit.dto.OrderDto;
 import com.example.springjunit.entity.Order;

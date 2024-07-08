@@ -1,11 +1,11 @@
-package com.example.springjunit.service;
+package com.example.springjunit.service.impl;
 
 import com.example.springjunit.dto.ClientDto;
 import com.example.springjunit.entity.Client;
 import com.example.springjunit.exception.NoSuchClientException;
 import com.example.springjunit.repository.ClientRepository;
-import com.example.springjunit.service.mapper.ClientMapper;
-import com.example.springjunit.util.ClientBookService;
+import com.example.springjunit.mapper.ClientMapper;
+import com.example.springjunit.service.abst.ClientBookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -38,20 +38,21 @@ public class JpaClientBookService implements ClientBookService {
     @Override
     public ClientDto getClientByPhone(String phone) {
         if (phone.isBlank()) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
+
         Client client = clientRepository.getClientByPhone(phone)
                 .orElseThrow(() -> new IllegalArgumentException("Client not found"));
-
         return clientMapper.toDto(client);
     }
 
     @Override
     public void addClient(ClientDto clientDto) {
-        Client client = clientMapper.toEntity(clientDto);
-        if (client.getPhone() == null) {
+        if (clientDto.phone() == null) {
             throw new NullPointerException("Phone number cannot be null");
         }
+
+        Client client = clientMapper.toEntity(clientDto);
         clientRepository.save(client);
     }
 

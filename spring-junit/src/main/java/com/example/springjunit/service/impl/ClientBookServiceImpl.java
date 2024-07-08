@@ -1,9 +1,9 @@
-package com.example.springjunit.service;
+package com.example.springjunit.service.impl;
 
 import com.example.springjunit.dto.OrderDto;
 import com.example.springjunit.repository.ClientRepository;
-import com.example.springjunit.service.mapper.ClientMapper;
-import com.example.springjunit.util.OrderService;
+import com.example.springjunit.mapper.ClientMapper;
+import com.example.springjunit.service.abst.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
