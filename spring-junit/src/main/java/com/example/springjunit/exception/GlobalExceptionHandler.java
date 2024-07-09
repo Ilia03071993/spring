@@ -19,7 +19,7 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(NoSuchCustomerException.class)
+    @ExceptionHandler({NoSuchCustomerException.class, NoSuchClientException.class})
     public ResponseEntity<?> handleNoSuchCustomerException(Exception ex) {
         Map<String, String> errors = new LinkedHashMap<>();
         errors.put("status", HttpStatus.NOT_FOUND.name());

@@ -17,24 +17,6 @@ public class JpaClientBookService implements ClientBookService {
     private final ClientRepository clientRepository;
     private final ClientMapper clientMapper;
 
-    public ClientDto getClientById(Integer id) {
-        Client client = clientRepository.findById(id)
-                .orElseThrow(() -> new NoSuchClientException("Client with id = %d not found".formatted(id)));
-
-        return clientMapper.toDto(client);
-    }
-
-    public void save(ClientDto clientDto) {
-        clientRepository.save(clientMapper.toEntity(clientDto));
-    }
-
-    @Override
-    public List<ClientDto> getAllClients() {
-        List<Client> clients = clientRepository.findAll();
-
-        return clientMapper.toDtoList(clients);
-    }
-
     @Override
     public ClientDto getClientByPhone(String phone) {
         if (phone.isBlank()) {
@@ -46,6 +28,25 @@ public class JpaClientBookService implements ClientBookService {
         return clientMapper.toDto(client);
     }
 
+    public ClientDto getClientById(Integer id) {
+        Client client = clientRepository.findById(id)
+                .orElseThrow(() -> new NoSuchClientException("Client with id = %d not found".formatted(id)));
+
+        return clientMapper.toDto(client);
+    }
+
+    @Override
+    public List<ClientDto> getAllClients() {
+        List<Client> clients = clientRepository.findAll();
+
+        return clientMapper.toDtoList(clients);
+    }
+
+    public void save(ClientDto clientDto) {
+        clientRepository.save(clientMapper.toEntity(clientDto));
+    } //?
+
+
     @Override
     public void addClient(ClientDto clientDto) {
         if (clientDto.phone() == null) {
@@ -54,7 +55,7 @@ public class JpaClientBookService implements ClientBookService {
 
         Client client = clientMapper.toEntity(clientDto);
         clientRepository.save(client);
-    }
+    } //?
 
     @Override
     public void updateClient(String phone, ClientDto clientDto) {
