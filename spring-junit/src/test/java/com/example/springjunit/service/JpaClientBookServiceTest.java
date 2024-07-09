@@ -4,8 +4,8 @@ import com.example.springjunit.dto.ClientDto;
 import com.example.springjunit.entity.Client;
 import com.example.springjunit.entity.Order;
 import com.example.springjunit.exception.NoSuchClientException;
-import com.example.springjunit.repository.ClientRepository;
 import com.example.springjunit.mapper.ClientMapper;
+import com.example.springjunit.repository.ClientRepository;
 import com.example.springjunit.service.impl.JpaClientBookService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,10 +17,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.never;
@@ -89,7 +89,9 @@ class JpaClientBookServiceTest {
                 .thenReturn(clientDtos);
 
         int result = jpaClientBookService.getAllClients().size();
-        assertEquals(clientDtos.size(), result);
+
+        assertThat(clientDtos.size()).isEqualTo(result);
+        // assertEquals(clientDtos.size(), result);
     }
 
     @Test
@@ -102,13 +104,14 @@ class JpaClientBookServiceTest {
                 .thenReturn(clientDto);
 
         ClientDto clientById = jpaClientBookService.getClientById(id);
-
-        assertEquals(client != null ? client.getPhone() : null, clientById.phone());
+        assertThat(client.getPhone()).isEqualTo(clientById.phone());
+        // assertEquals(client != null ? client.getPhone() : null, clientById.phone());
     }
 
     @Test
     void getClientById_IfIncorrectId() {
         Integer id = 5;
+        String exMessage = "Client with id = %d not found".formatted(id);
 
         when(clientRepository.findById(id))
                 .thenReturn(Optional.empty());
@@ -116,8 +119,9 @@ class JpaClientBookServiceTest {
         NoSuchClientException ex = assertThrows(NoSuchClientException.class,
                 () -> jpaClientBookService.getClientById(id)
         );
-        String exMessage = "Client with id = %d not found".formatted(id);
-        assertEquals(exMessage, ex.getMessage());
+
+        assertThat(exMessage).isEqualTo(ex.getMessage());
+        // assertEquals(exMessage, ex.getMessage());
     }
 
     @Test
@@ -130,8 +134,10 @@ class JpaClientBookServiceTest {
                 .thenReturn(clientDto);
         ClientDto clientByPhone = jpaClientBookService.getClientByPhone(phone);
 
-        assertEquals(clientDto.name(), clientByPhone.name());
-        assertEquals(clientDto.phone(), clientByPhone.phone());
+        assertThat(clientDto.name()).isEqualTo(clientByPhone.name());
+        assertThat(clientDto.phone()).isEqualTo(clientByPhone.phone());
+        // assertEquals(clientDto.name(), clientByPhone.name());
+        //  assertEquals(clientDto.phone(), clientByPhone.phone());
 
 //        verify(clientRepository).getClientByPhone(captor.capture().getPhone());
 //        assertEquals(phone, captor.getValue().getPhone());
@@ -140,10 +146,11 @@ class JpaClientBookServiceTest {
     @Test
     void getClientByPhone_shouldThrowIllegalArgumentException_ifNullPhone() {
         String phone = "";
-
-        assertThrows(IllegalArgumentException.class,
-                () -> jpaClientBookService.getClientByPhone(phone)
-        );
+        assertThatThrownBy(() -> jpaClientBookService.getClientByPhone(phone))
+                .isInstanceOf(IllegalArgumentException.class);
+//        assertThrows(IllegalArgumentException.class,
+//                () -> jpaClientBookService.getClientByPhone(phone)
+//        );
     }
 
     @Test
@@ -163,18 +170,23 @@ class JpaClientBookServiceTest {
 
         Client captorValue = captor.getValue();
 
-        assertEquals(clientDto.name(), captorValue.getName());
-        assertEquals(clientDto.phone(), captorValue.getPhone());
+        assertThat(clientDto.name()).isEqualTo(captorValue.getName());
+        assertThat(clientDto.phone()).isEqualTo(captorValue.getPhone());
+//        assertEquals(clientDto.name(), captorValue.getName());
+//        assertEquals(clientDto.phone(), captorValue.getPhone());
     }
 
     @Test
     void addClient_shouldThrowNullPointerException_ifPhoneIsNull() {
         ClientDto clientDto = new ClientDto("Fill", null);
 
-        assertThrows(NullPointerException.class,
-                () -> jpaClientBookService.addClient(clientDto),
-                "Phone number cannot be null"
-        );
+        assertThatThrownBy(() -> jpaClientBookService.addClient(clientDto))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessage("Phone number cannot be null");
+//        assertThrows(NullPointerException.class,
+//                () -> jpaClientBookService.addClient(clientDto),
+//                "Phone number cannot be null"
+//        );
 
         //удостовериться метод save не был вызван
         verify(clientRepository, never()).save(any(Client.class));
@@ -212,21 +224,27 @@ class JpaClientBookServiceTest {
 
         verify(clientRepository).save(captor.capture());
         Client captorValue = captor.getValue();
-        assertEquals(clientDtoNew.name(), captorValue.getName());
-        assertEquals(clientDtoNew.phone(), captorValue.getPhone());
+        assertThat(clientDtoNew.name()).isEqualTo(captorValue.getName());
+        assertThat(clientDtoNew.phone()).isEqualTo(captorValue.getPhone());
+//        assertEquals(clientDtoNew.name(), captorValue.getName());
+//        assertEquals(clientDtoNew.phone(), captorValue.getPhone());
     }
 
     @Test
     void updateClient_shouldThrowIllegalArgumentException_ifNullPhone() {
         String phone = null;
         ClientDto clientDto = new ClientDto("Jake", "89160976967");
-        IllegalArgumentException ex = assertThrows(
-                IllegalArgumentException.class,
-                () -> jpaClientBookService.updateClient(phone, clientDto)
-        );
-        assertEquals("Phone number cannot be null or blank",
-                ex.getMessage()
-        );
+
+        assertThatThrownBy(() -> jpaClientBookService.updateClient(phone, clientDto))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Phone number cannot be null or blank");
+//        IllegalArgumentException ex = assertThrows(
+//                IllegalArgumentException.class,
+//                () -> jpaClientBookService.updateClient(phone, clientDto)
+//        );
+//        assertEquals("Phone number cannot be null or blank",
+//                ex.getMessage()
+//        );
     }
 
     @Test
@@ -236,13 +254,17 @@ class JpaClientBookServiceTest {
         when(clientRepository.getClientByPhone(incorrectPhone))
                 .thenReturn(Optional.empty());
 
-        NoSuchClientException ex = assertThrows(
-                NoSuchClientException.class,
-                () -> jpaClientBookService.updateClient(incorrectPhone, any(ClientDto.class))
-        );
-        assertEquals("Client with phone = %s not found".formatted(incorrectPhone),
-                ex.getMessage()
-        );
+        assertThatThrownBy(() -> jpaClientBookService.updateClient(incorrectPhone, any(ClientDto.class)))
+                .isInstanceOf(NoSuchClientException.class)
+                .hasMessage("Client with phone = %s not found".formatted(incorrectPhone));
+
+//        NoSuchClientException ex = assertThrows(
+//                NoSuchClientException.class,
+//                () -> jpaClientBookService.updateClient(incorrectPhone, any(ClientDto.class))
+//        );
+//        assertEquals("Client with phone = %s not found".formatted(incorrectPhone),
+//                ex.getMessage()
+//        );
     }
 
     @Test
@@ -265,11 +287,14 @@ class JpaClientBookServiceTest {
         when(clientRepository.getClientByPhone(incorrectPhone))
                 .thenReturn(Optional.empty());
 
-        NoSuchClientException ex = assertThrows(NoSuchClientException.class,
-                () -> jpaClientBookService.deleteClient(incorrectPhone));
-
-        assertEquals("Client with phone = %s not found".formatted(incorrectPhone),
-                ex.getMessage()
-        );
+        assertThatThrownBy(() -> jpaClientBookService.deleteClient(incorrectPhone))
+                .isInstanceOf(NoSuchClientException.class)
+                .hasMessage("Client with phone = %s not found".formatted(incorrectPhone));
+//        NoSuchClientException ex = assertThrows(NoSuchClientException.class,
+//                () -> jpaClientBookService.deleteClient(incorrectPhone));
+//
+//        assertEquals("Client with phone = %s not found".formatted(incorrectPhone),
+//                ex.getMessage()
+        //  );
     }
 }

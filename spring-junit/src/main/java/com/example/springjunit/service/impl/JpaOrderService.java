@@ -42,11 +42,11 @@ public class JpaOrderService implements OrderService {
     }
 
     @Override
-    public void deleteOrderFromClient(Integer oderId, Integer clientId) {
+    public void deleteOrderFromClient(Integer orderIndex, Integer clientId) {
         ClientDto clientDto = jpaClientBookService.getClientById(clientId);
         Client client = clientMapper.toEntity(clientDto);
 
-        Order orderRemove = client.getOrders().get(oderId);
+        Order orderRemove = client.getOrders().get(orderIndex);
 
         client.getOrders().remove(orderRemove);
         orderRepository.delete(orderRemove);

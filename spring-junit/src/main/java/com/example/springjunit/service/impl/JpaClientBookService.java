@@ -78,4 +78,5 @@ public class JpaClientBookService implements ClientBookService {
                 .orElseThrow(() -> new NoSuchClientException("Client with phone = %s not found".formatted(phone)));
         clientRepository.delete(deletableClient);
     }
+
 }
