@@ -9,13 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
-//    private final TransactionTemplate transactionTemplate;
+    private final TransactionTemplate transactionTemplate;
 
     @Transactional
     public void saveProduct(List<Product> products) throws Exception {
@@ -54,7 +53,7 @@ public class ProductService {
     @Transactional
     public void increaseQuantity(Integer productId, Integer quantityIncrease) {
         if (quantityIncrease > 0) {
-             productRepository.increaseQuantity(productId, quantityIncrease);
+            productRepository.increaseQuantity(productId, quantityIncrease);
         }
     }
 
