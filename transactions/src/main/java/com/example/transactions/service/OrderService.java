@@ -1,7 +1,7 @@
 package com.example.transactions.service;
 
-import com.example.transactions.dto.LogDto;
 import com.example.transactions.dto.OrderDto;
+import com.example.transactions.entity.Log;
 import com.example.transactions.entity.Order;
 import com.example.transactions.exception.NoSuchOrderException;
 import com.example.transactions.mapper.OrderMapper;
@@ -9,13 +9,8 @@ import com.example.transactions.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -25,7 +20,7 @@ public class OrderService {
     private final OrderMapper orderMapper;
     private final AuditService auditService;
 
-    @Transactional(readOnly = true, propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
+    @Transactional(readOnly = true)
     public OrderDto getOrderById(Integer id) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new NoSuchOrderException("Order with id = %d is not found".formatted(id)));
@@ -35,7 +30,7 @@ public class OrderService {
         return orderMapper.toDto(order);
     }
 
-    @Transactional(readOnly = true, propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
+    @Transactional(readOnly = true)
     public List<OrderDto> getOrders() {
         List<Order> orders = orderRepository.findAll();
 
@@ -44,7 +39,7 @@ public class OrderService {
         return orderMapper.toListDto(orders);
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
+    @Transactional
     public OrderDto addOrder(OrderDto orderDto) {
         if (orderDto.name() == null || orderDto.name().isBlank()) {
             throw new NoSuchOrderException("Name should be not null");
@@ -58,7 +53,7 @@ public class OrderService {
         return orderMapper.toDto(saveOrder);
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
+    @Transactional
     public void updateOrderById(Integer id, OrderDto orderDto) {
         if (orderDto.name() == null || orderDto.name().isBlank()) {
             throw new NoSuchOrderException("Name should be not null");
@@ -73,7 +68,7 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
+    @Transactional
     public void deleteById(Integer id) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new NoSuchOrderException("Order with id = %d is not found".formatted(id)));
@@ -85,9 +80,9 @@ public class OrderService {
 
     private void handleMethod(String methodName) {
         auditService.addLog(
-                new LogDto(methodName,
-                        HttpStatus.OK.toString(),
-                        Date.from(ZonedDateTime.now(ZoneId.systemDefault()).toInstant()))
+                new Log(methodName,
+                        HttpStatus.OK.toString()
+                )
         );
     }
 }

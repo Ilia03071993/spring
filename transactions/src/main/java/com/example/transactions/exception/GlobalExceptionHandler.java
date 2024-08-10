@@ -1,6 +1,6 @@
 package com.example.transactions.exception;
 
-import com.example.transactions.dto.LogDto;
+import com.example.transactions.entity.Log;
 import com.example.transactions.service.AuditService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -15,9 +15,7 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,9 +52,7 @@ public class GlobalExceptionHandler
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         errors.put("datetime", dateTimeStr);
 
-        LocalDateTime localDateTime = LocalDateTime.now();
-        Date date = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
-        auditService.addLog(new LogDto(errors.get("operation"), errors.get("message"), date));
+        auditService.addLog(new Log(errors.get("operation"), errors.get("message")));
 
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
