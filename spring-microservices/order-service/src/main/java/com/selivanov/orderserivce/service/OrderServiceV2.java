@@ -1,8 +1,7 @@
 package com.selivanov.orderserivce.service;
 
-import com.selivanov.orderserivce.client.ProductServiceClient;
+import com.selivanov.orderserivce.client.ProductServiceClientV2;
 import com.selivanov.orderserivce.dto.v1.OrderDto;
-import com.selivanov.orderserivce.dto.v1.ProductDto;
 import com.selivanov.orderserivce.entity.Order;
 import com.selivanov.orderserivce.exception.NoSuchProductException;
 import com.selivanov.orderserivce.mapper.OrderMapper;
@@ -14,23 +13,13 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class OrderService {
+public class OrderServiceV2 {
+    private final ProductServiceClientV2 productServiceClientV2;
     private final OrderRepository orderRepository;
-    private final ProductServiceClient serviceClient;
     private final OrderMapper orderMapper;
 
-    public void createOrder(OrderDto orderDto) {
-        ProductDto productDto = serviceClient.getProductById(orderDto.productId()); //HTTP call to product-service
-        Order order = orderMapper.dtoToOrder(orderDto, productDto);
-        orderRepository.save(order);
-
-        //        Order order = new Order();
-//        order.setCreatedAt(LocalDateTime.now());
-//        order.setProductId(productDto.id());
-    }
-
     public OrderDto createOrder(com.selivanov.orderserivce.dto.v2.OrderDto orderDto) {
-        com.selivanov.orderserivce.dto.v2.ProductDto product = serviceClient.getProduct(orderDto.productId());
+        com.selivanov.orderserivce.dto.v2.ProductDto product = productServiceClientV2.getProduct(orderDto.productId());
 
         if (orderDto.productQuantity() < 0 && orderDto.productQuantity() > product.quantity()) {
             throw new NoSuchProductException("Quantity of product is not correct, actual quantity of product = %d"
@@ -47,7 +36,7 @@ public class OrderService {
 
         Integer updatedQuantity = product.quantity() - orderDto.productQuantity();
         com.selivanov.orderserivce.dto.v2.ProductDto updateProductDto = new com.selivanov.orderserivce.dto.v2.ProductDto(product.id(), product.name(), updatedQuantity);
-        serviceClient.putProductById(product.id(), updateProductDto);
+        productServiceClientV2.updateProductById(product.id(), updateProductDto);
 
         return orderMapper.toDto(savedOrder);
     }

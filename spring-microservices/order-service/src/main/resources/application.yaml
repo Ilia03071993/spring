@@ -1,5 +1,5 @@
 product-service-v1:
-  url: http://localhost:8081/api/v1/products/{id}
+  url: http://localhost:8081/api/products/
 
 product-service-v2:
   url: http://localhost:8081/api/v2/products/
