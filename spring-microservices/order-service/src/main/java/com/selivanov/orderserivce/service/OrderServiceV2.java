@@ -19,7 +19,7 @@ public class OrderServiceV2 {
 
     public OrderDto getOrderById(Integer id) {
         Order order = orderRepository.findById(id).orElseThrow(() ->
-                new NoSuchProductException("The product isnot found with id = %d".formatted(id)));
+                new NoSuchProductException("The product is not found with id = %d".formatted(id)));
 
        return orderMapper.toDto(order);
     }
@@ -27,21 +27,14 @@ public class OrderServiceV2 {
     public OrderDto createOrder(OrderDto orderDto) {
         ProductDto product = productServiceClientV2.getProduct(orderDto.productId());
 
-        if (orderDto.productQuantity() < 0 && orderDto.productQuantity() > product.quantity()) {
-            throw new NoSuchProductException("Quantity of product is not correct, actual quantity of product = %d"
+        if (orderDto.productQuantity() < 0 || orderDto.productQuantity() > product.quantity()) {
+            throw new NoSuchProductException("Requested quantity is not valid. Available quantity: %d"
                     .formatted(product.quantity()));
         }
         Order order = orderMapper.toEntity(orderDto);
-//        Order order = new Order();
-//        order.setProductId(product.id());
-//        order.setProductQuantity(orderDto.productQuantity());
-//        order.setCreatedAt(LocalDateTime.now());
-
         Order savedOrder = orderRepository.save(order);
 
-
-        Integer updatedQuantity = product.quantity() - orderDto.productQuantity();
-        ProductDto updateProductDto = new ProductDto(product.id(), product.name(), updatedQuantity);
+        ProductDto updateProductDto = new ProductDto(product.id(), product.name(), orderDto.productQuantity());
         productServiceClientV2.updateProductById(product.id(), updateProductDto);
 
         return orderMapper.toDto(savedOrder);

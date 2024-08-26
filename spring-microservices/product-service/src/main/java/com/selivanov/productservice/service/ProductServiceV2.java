@@ -34,25 +34,17 @@ public class ProductServiceV2 {
                 .orElseThrow(() -> new NoSuchProductException("Product with id = %d not found".formatted(productId)));
 
         if (productDto.quantity() < 0) {
-            throw new NoSuchProductException("Product = '%s' of quantity is not be negative, actual quantity = %d"
+            throw new NoSuchProductException("Product = '%s' of quantity cannot be negative, actual quantity = %d"
                     .formatted(updatableProduct.getName(), updatableProduct.getQuantity()));
         }
 
-        // Integer updatedQuantity = product.quantity() - orderDto.productQuantity();
-        OrderDto orderDto = orderServiceClient.getOrder(productId);
+        if (productDto.quantity() > updatableProduct.getQuantity()) {
+            throw new NoSuchProductException("Insufficient quantity for product = '%s'. Available quantity = %d"
+                    .formatted(updatableProduct.getName(), updatableProduct.getQuantity()));
+        }
+        int sumQuantity = updatableProduct.getQuantity() - productDto.quantity();
 
-//        if (orderDto.productQuantity() < 0 && orderDto.productQuantity() > updatableProduct.getQuantity()) {
-//            throw new NoSuchProductException("Quantity of product is not correct, actual quantity of product = %d"
-//                    .formatted(productDto.quantity()));
-//        }
-          updatableProduct.setQuantity(productDto.quantity());
-       // int sumQuantity = updatableProduct.getQuantity() - orderDto.productQuantity();
-//        if (sumQuantity < 0) {
-//            throw new NoSuchProductException("Actual quantity of product = %d"
-//                    .formatted(updatableProduct.getQuantity()));
-//        }
-      //  updatableProduct.setQuantity(sumQuantity);
-
+        updatableProduct.setQuantity(sumQuantity);
         updatableProduct.setName(productDto.name());
         productRepository.save(updatableProduct);
     }
