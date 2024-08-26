@@ -8,10 +8,6 @@ import java.time.LocalDateTime;
 
 @Mapper(componentModel = "spring")
 public interface OrderMapperV2 {
-    @BeforeMapping
-    default void before(){
-        Order order = new Order();
-    }
     Order toEntity(OrderDto orderDto);
     @AfterMapping
     default void after(@MappingTarget Order order){

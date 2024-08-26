@@ -17,6 +17,13 @@ public class OrderServiceV2 {
     private final OrderRepository orderRepository;
     private final OrderMapperV2 orderMapper;
 
+    public OrderDto getOrderById(Integer id) {
+        Order order = orderRepository.findById(id).orElseThrow(() ->
+                new NoSuchProductException("The product isnot found with id = %d".formatted(id)));
+
+       return orderMapper.toDto(order);
+    }
+
     public OrderDto createOrder(OrderDto orderDto) {
         ProductDto product = productServiceClientV2.getProduct(orderDto.productId());
 
