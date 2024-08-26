@@ -1,5 +1,6 @@
 package com.selivanov.orderserivce.client;
 
+import com.selivanov.orderserivce.dto.v2.ProductDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -13,10 +14,12 @@ public class ProductServiceClientV2 {
 
     private final RestTemplate restTemplate;
 
-    public com.selivanov.orderserivce.dto.v2.ProductDto getProduct(Integer productId) {
-        return restTemplate.getForObject(productServiceUrlV2 + "%d".formatted(productId), com.selivanov.orderserivce.dto.v2.ProductDto.class, productId);
+    public ProductDto getProduct(Integer productId) {
+        return restTemplate.getForObject(productServiceUrlV2 + "%d".formatted(productId),
+                ProductDto.class, productId);
     }
-    public void updateProductById(Integer productId, com.selivanov.orderserivce.dto.v2.ProductDto productDto) {
+
+    public void updateProductById(Integer productId, ProductDto productDto) {
         String url = String.format("%s/%d", productServiceUrlV2, productId);
         restTemplate.put(url, productDto);
     }

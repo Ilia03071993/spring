@@ -11,7 +11,7 @@ import org.mapstruct.MappingTarget;
 import java.time.LocalDateTime;
 
 @Mapper(componentModel = "spring")
-public interface OrderMapper {
+public interface OrderMapperV1 {
     OrderDto toDto(Order order);
     @Mapping(target = "productId", source = "productDto.id")
     Order dtoToOrder(OrderDto orderDto, ProductDto productDto);

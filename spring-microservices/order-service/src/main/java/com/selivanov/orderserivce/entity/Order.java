@@ -18,5 +18,6 @@ public class Order {
     private LocalDateTime createdAt;
 
     private Integer productId;
+
     private Integer productQuantity;
 }

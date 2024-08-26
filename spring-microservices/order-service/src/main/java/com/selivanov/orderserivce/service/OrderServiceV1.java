@@ -4,7 +4,7 @@ import com.selivanov.orderserivce.client.ProductServiceClientV1;
 import com.selivanov.orderserivce.dto.v1.OrderDto;
 import com.selivanov.orderserivce.dto.v1.ProductDto;
 import com.selivanov.orderserivce.entity.Order;
-import com.selivanov.orderserivce.mapper.OrderMapper;
+import com.selivanov.orderserivce.mapper.OrderMapperV1;
 import com.selivanov.orderserivce.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,11 +14,11 @@ import org.springframework.stereotype.Service;
 public class OrderServiceV1 {
     private final OrderRepository orderRepository;
     private final ProductServiceClientV1 serviceClient;
-    private final OrderMapper orderMapper;
+    private final OrderMapperV1 orderMapperV1;
 
     public void createOrder(OrderDto orderDto) {
         ProductDto productDto = serviceClient.getProductById(orderDto.productId()); //HTTP call to product-service
-        Order order = orderMapper.dtoToOrder(orderDto, productDto);
+        Order order = orderMapperV1.dtoToOrder(orderDto, productDto);
         orderRepository.save(order);
 
         //        Order order = new Order();
