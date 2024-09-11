@@ -4,6 +4,7 @@ import com.example.consumer.dto.RepertoryDto;
 import com.example.consumer.service.RepertoryService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -19,7 +20,6 @@ public class KafkaController {
     private static final String STRING_TOPIC_RESULT = "kafka-string-result-topic";
 
     private final KafkaTemplate<Integer, String> kafkaTemplate;
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @KafkaListener(topics = STRING_TOPIC)
     public void consumerString(String value) {
@@ -31,6 +31,8 @@ public class KafkaController {
 //                LocalDateTime.parse(split[2]),
 //                LocalDateTime.parse(split[3])
 //        );
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
         try {
             RepertoryDto repertoryDto = objectMapper.readValue(value, RepertoryDto.class);
 

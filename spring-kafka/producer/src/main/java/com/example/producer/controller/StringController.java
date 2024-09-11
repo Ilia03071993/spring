@@ -4,6 +4,7 @@ import com.example.producer.dto.UserDto;
 import com.example.producer.sevice.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -28,6 +29,7 @@ public class StringController {
         UserDto userDto = userService.saveUser(message);
 
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
         String userDtoJson;
 
         try {
