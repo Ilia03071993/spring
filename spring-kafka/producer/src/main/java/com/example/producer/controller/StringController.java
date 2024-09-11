@@ -2,6 +2,8 @@ package com.example.producer.controller;
 
 import com.example.producer.dto.UserDto;
 import com.example.producer.sevice.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -25,10 +27,19 @@ public class StringController {
     public String sendMessageToKafka(@RequestParam String message) {
         UserDto userDto = userService.saveUser(message);
 
-        kafkaTemplate.send(STRING_TOPIC, String.valueOf(userDto));
+        ObjectMapper objectMapper = new ObjectMapper();
+        String userDtoJson;
 
-        log.info("Message {} sent to Kafka in topic {}", userDto, STRING_TOPIC);
+        try {
+            userDtoJson = objectMapper.writeValueAsString(userDto);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
-        return "Message sent to Kafka in topic" + STRING_TOPIC;
+        kafkaTemplate.send(STRING_TOPIC, userDtoJson);
+
+        log.info("Message {} sent to Kafka in topic {}", userDtoJson, STRING_TOPIC);
+
+        return "Message sent to Kafka in topic " + STRING_TOPIC;
     }
 }

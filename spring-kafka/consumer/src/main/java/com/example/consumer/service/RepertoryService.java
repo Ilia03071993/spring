@@ -1,5 +1,7 @@
 package com.example.consumer.service;
 
+import com.example.consumer.dto.RepertoryDto;
+import com.example.consumer.mapper.RepertoryMapper;
 import com.example.consumer.repository.RepertoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,13 +14,14 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class RepertoryService {
     private final RepertoryRepository repository;
+    private final RepertoryMapper mapper;
 
-    @Value("${message.retention-period}")
-    private int retentionPeriod;
+    public void saveRepertory(RepertoryDto repertoryDto) {
+        repository.save(mapper.toEntity(repertoryDto));
+    }
 
     @Scheduled(fixedRate = 12000)
     public void delete() {
-        LocalDateTime retentionTime = LocalDateTime.now().plusMinutes(retentionPeriod);
-        repository.deleteRepositoryExpirationDateTimeOut(retentionTime);
+        repository.deleteRepositoryExpirationDateTimeOut(LocalDateTime.now());
     }
 }

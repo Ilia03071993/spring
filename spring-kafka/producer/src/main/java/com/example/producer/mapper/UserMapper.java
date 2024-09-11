@@ -17,6 +17,5 @@ public interface UserMapper {
     @AfterMapping
     default void after(@MappingTarget User user) {
         user.setCreationDateTime(LocalDateTime.now());
-        user.setExpirationDateTime(LocalDateTime.now());
     }
 }

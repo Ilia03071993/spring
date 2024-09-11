@@ -1,12 +1,18 @@
+message:
+  retention-period: 5
+
+server:
+  port: 8080
+
 spring:
   datasource:
-    url: jdbc:mysql://producer-db:3307/producer_db
+    url: jdbc:mysql://localhost:3306/producer_db
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         show_sql: true
