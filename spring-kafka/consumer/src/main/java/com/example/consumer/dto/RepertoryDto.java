@@ -1,14 +1,14 @@
 package com.example.consumer.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDateTime;
 
 public record RepertoryDto(
+        @JsonProperty("id")
+        Integer userId,
         String message,
-
-        Integer user_id,
-
         LocalDateTime creationDateTime,
-
         LocalDateTime expirationDateTime
 ) {
 }

@@ -2,9 +2,6 @@ package com.example.consumer.controller;
 
 import com.example.consumer.dto.RepertoryDto;
 import com.example.consumer.service.RepertoryService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -22,31 +19,14 @@ public class KafkaController {
     private final KafkaTemplate<Integer, String> kafkaTemplate;
 
     @KafkaListener(topics = STRING_TOPIC)
-    public void consumerString(String value) {
-//        String[] split = value.split(", ");
-//        System.out.println(Arrays.toString(split));
-//        RepertoryDto repertoryDto = new RepertoryDto(
-//                split[1],
-//                Integer.parseInt(split[0]),
-//                LocalDateTime.parse(split[2]),
-//                LocalDateTime.parse(split[3])
-//        );
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        try {
-            RepertoryDto repertoryDto = objectMapper.readValue(value, RepertoryDto.class);
+    public void consumerString(String json) {
+        RepertoryDto repertoryDto = repertoryService.consumerStr(json);
+        repertoryService.saveRepertory(repertoryDto);
 
-            repertoryService.saveRepertory(repertoryDto);
+        log.info("Consumed from producer: " + json);
 
-            log.info("Consumed from producer: " + value);
+        String result = "[result] " + json.toUpperCase();
 
-            String result = "[result] " + value.toUpperCase();
-
-            kafkaTemplate.send(STRING_TOPIC_RESULT, result);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-
-        repertoryService.delete();
+        kafkaTemplate.send(STRING_TOPIC_RESULT, result);
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequestMapping("/api/producer")
-public class ProducerController {
+public class ProducerControllerTest {
     @GetMapping
     public String getTestString() {
         RestTemplate restTemplate = new RestTemplate();
