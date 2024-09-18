@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class JsonUtils {
     private final ObjectMapper objectMapper;
 
-    public <T> String toJson(T object) {
+    public <T> Object toJson(T object) {
         try {
             return objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {

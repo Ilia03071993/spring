@@ -1,10 +1,15 @@
 package com.example.consumer.mapper;
 
-import com.example.consumer.dto.RepertoryDto;
 import com.example.consumer.entity.Repertory;
+import com.example.model.dto.UserDto;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", imports = UserDto.class)
 public interface RepertoryMapper {
-    Repertory toEntity(RepertoryDto repertoryDto);
+//    @Mapping(target = "id", expression = "java(null)")
+    @Mapping(target = "userId", expression =  "java(userDto.id())")
+    Repertory toEntity(UserDto userDto);
+    @Mapping(target = "id", source = "userId")
+    UserDto toDto (Repertory repertory);
 }

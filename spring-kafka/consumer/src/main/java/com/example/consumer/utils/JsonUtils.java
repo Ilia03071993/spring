@@ -1,5 +1,6 @@
 package com.example.consumer.utils;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -15,7 +16,7 @@ public class JsonUtils {
         try {
             return objectMapper.readValue(json, valueType);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error while parsing JSON", e);
         }
     }
 }

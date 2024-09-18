@@ -1,4 +1,4 @@
-package com.example.consumer.entity;
+package com.example.audit.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -9,17 +9,13 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "repertory")
-public class Repertory {
+@Table(name = "audits")
+public class Audit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    private String message;
-
+    private String actionType; //add messages or delete
     private Integer userId;
-
-    private LocalDateTime creationDateTime;
-
-    private LocalDateTime expirationDateTime;
+    private LocalDateTime actionTime;
+    private String details;
 }

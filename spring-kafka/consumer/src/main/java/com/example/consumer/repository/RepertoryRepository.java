@@ -7,10 +7,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface RepertoryRepository extends JpaRepository<Repertory, Integer> {
     @Modifying
     @Query("delete from Repertory r where r.expirationDateTime <= :expirationDateTime")
     void deleteRepositoryExpirationDateTimeOut (LocalDateTime expirationDateTime);
+
+    @Query("from Repertory r where r.userId = :id")
+    List<Repertory> getAllByUserId(Integer id);
 }
