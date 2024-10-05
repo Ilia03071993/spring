@@ -9,7 +9,7 @@ public class TopicConfig {
 
     @Bean
     public NewTopic topic() {
-        return new NewTopic("json-topic", 2, (short) 1);
+        return new NewTopic("kafka-request", 2, (short) 1);
     }
 
     @Bean

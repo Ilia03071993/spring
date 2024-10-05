@@ -8,8 +8,8 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring", imports = UserDto.class)
 public interface RepertoryMapper {
 //    @Mapping(target = "id", expression = "java(null)")
-    @Mapping(target = "userId", expression =  "java(userDto.id())")
+    @Mapping(target = "userId", expression =  "java(userDto.userId())")
     Repertory toEntity(UserDto userDto);
-    @Mapping(target = "id", source = "userId")
+    @Mapping(target = "userId", source = "userId")
     UserDto toDto (Repertory repertory);
 }

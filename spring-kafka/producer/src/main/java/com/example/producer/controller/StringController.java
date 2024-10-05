@@ -2,7 +2,6 @@ package com.example.producer.controller;
 
 import com.example.model.dto.UserDto;
 import com.example.producer.sevice.UserService;
-import com.example.producer.util.JsonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -16,16 +15,14 @@ import java.util.List;
 @RequestMapping("/api/string")
 @RequiredArgsConstructor
 public class StringController {
-    private final UserService userService;
-    private static final String STRING_TOPIC = "json-topic";
+    private static final String MESSAGE_REQUEST_TOPIC = "kafka-request";
     private static final String DELETE_REQUEST_TOPIC = "kafka-delete-request";
-    private static final String STRING_TOPIC_RESULT = "kafka-string-result-topic";
+    private static final String MESSAGE_TOPIC_RESULT = "kafka-message-result-topic";
     private static final String HISTORY_REQUEST_TOPIC = "kafka-history-request-topic";
     private static final String HISTORY_RESULT_TOPIC = "kafka-history-result-topic";
 
     private final KafkaTemplate<Integer, Object> kafkaTemplate;
-    private final JsonUtils jsonUtils;
-
+    private final UserService service;
 
     @GetMapping("/history/{userId}")
     public String requestMessageHistory(@PathVariable Integer userId) {
@@ -36,34 +33,30 @@ public class StringController {
     }
 
     @KafkaListener(topics = HISTORY_RESULT_TOPIC, groupId = "history-result-consumer")
-    public void receiveMessagesHistory(List<UserDto> userDtos){
+    public void receiveMessagesHistory(List<UserDto> userDtos) {
         log.info("Received chat history from consumer: {}", userDtos);
     }
 
     @PostMapping
     public UserDto sendMessageToKafka(@RequestBody UserDto userDto) {
-        UserDto savedUserDto = userService.saveUser(userDto);
-        Object json = jsonUtils.toJson(savedUserDto);
-        kafkaTemplate.send(STRING_TOPIC, json);
-        log.info("Message {} sent to Kafka in topic {}", json, STRING_TOPIC);
+        UserDto messageToConsumer = service.sendMessageToKafka(userDto);
+        kafkaTemplate.send(MESSAGE_REQUEST_TOPIC, messageToConsumer);
+        log.info("Message {} sent to Kafka in topic {}", userDto, MESSAGE_REQUEST_TOPIC);
 
         return userDto;
     }
 
     @DeleteMapping
     public UserDto sendDeletedUserToKafka(@RequestBody UserDto userDto) {
-        Object json = jsonUtils.toJson(userDto);
-        kafkaTemplate.send(DELETE_REQUEST_TOPIC, json);
-        log.info("Delete request for user {} sent to Kafka in topic {}", json, DELETE_REQUEST_TOPIC);
+//        Object json = jsonUtils.toJson(userDto);
+        kafkaTemplate.send(DELETE_REQUEST_TOPIC, userDto);
+        log.info("Delete request for user {} sent to Kafka in topic {}", userDto, DELETE_REQUEST_TOPIC);
 
         return userDto;
     }
 
-    @KafkaListener(topics = STRING_TOPIC_RESULT, groupId = "kafka-result-consumer")
+    @KafkaListener(topics = MESSAGE_TOPIC_RESULT, groupId = "kafka-result-consumer")
     public void receiveDeletionResult(String result) {
         log.info("Received deletion result from kafka: {}", result);
     }
-
-
-
 }

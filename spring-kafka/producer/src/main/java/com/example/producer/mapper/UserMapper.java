@@ -2,12 +2,12 @@ package com.example.producer.mapper;
 
 import com.example.model.dto.UserDto;
 import com.example.producer.entity.User;
-import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Value;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.time.LocalDateTime;
 
-@Mapper(componentModel = "spring", imports = LocalDateTime.class)
+@Mapper(componentModel = "spring", imports = {LocalDateTime.class, UserDto.class})
 public interface UserMapper {
     @Mapping(target = "creationDateTime", expression = "java(LocalDateTime.now())")
     @Mapping(target = "expirationDateTime", expression = "java(LocalDateTime.now().plusMinutes(5))")
@@ -19,5 +19,6 @@ public interface UserMapper {
 //        user.setExpirationDateTime(LocalDateTime.now().plusMinutes(5));
 //    }
 
+    @Mapping(target = "userId", source = "id")
     UserDto toDto(User user);
 }

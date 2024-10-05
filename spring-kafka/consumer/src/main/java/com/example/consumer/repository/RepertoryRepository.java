@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface RepertoryRepository extends JpaRepository<Repertory, Integer> {
@@ -17,4 +18,7 @@ public interface RepertoryRepository extends JpaRepository<Repertory, Integer> {
 
     @Query("from Repertory r where r.userId = :id")
     List<Repertory> getAllByUserId(Integer id);
+
+    @Query("from Repertory r where r.userId = :id")
+    Optional<Repertory> getRepertoryByUserId(Integer id);
 }
