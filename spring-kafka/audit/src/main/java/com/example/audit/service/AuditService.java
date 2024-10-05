@@ -20,7 +20,6 @@ public class AuditService {
         audit.setUserId(auditDto.userId());
         audit.setDetails(auditDto.details());
 
-
         repository.save(audit);
     }
 }

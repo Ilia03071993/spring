@@ -1,8 +1,19 @@
+audit-service:
+  url: http://localhost:8082/api/audit
+
 message:
   retention-period: 5
 
 server:
   port: 8080
+
+kafka:
+  topics:
+    messageRequest: kafka-request
+    deleteRequest: kafka-delete-request
+    messageResult: kafka-message-result-topic
+    historyRequest: kafka-history-request-topic
+    historyResult: kafka-history-result-topic
 
 spring:
   datasource:
