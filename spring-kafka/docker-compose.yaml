@@ -37,9 +37,13 @@ services:
       KAFKA_JMX_HOSTNAME: ${DOCKER_HOST_IP:-127.0.0.1}
       KAFKA_AUTHORIZER_CLASS_NAME: kafka.security.authorizer.AclAuthorizer
       KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: "true"
-#      KAFKA_ZOOKEEPER_SESSION_TIMEOUT_MS: 60000
     depends_on:
       - zookeeper
+
+networks:
+  kafka_network:
+    name: kafka_docker_network
+
 
 #  audit-service:
 #    build: ./audit
@@ -49,9 +53,6 @@ services:
 #    depends_on:
 #      - kafka
 
-networks:
-  kafka_network:
-    name: kafka_docker_network
 
 #services:
 #  producer-db:

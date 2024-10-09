@@ -12,13 +12,13 @@ import java.util.Optional;
 
 @Repository
 public interface RepertoryRepository extends JpaRepository<Repertory, Integer> {
-    @Modifying
-    @Query("delete from Repertory r where r.expirationDateTime <= :expirationDateTime")
-    void deleteRepositoryExpirationDateTimeOut (LocalDateTime expirationDateTime);
-
     @Query("from Repertory r where r.userId = :id")
     List<Repertory> getAllByUserId(Integer id);
 
     @Query("from Repertory r where r.userId = :id")
     Optional<Repertory> getRepertoryByUserId(Integer id);
+
+    @Modifying
+    @Query("delete from Repertory r where r.expirationDateTime <= :expirationDateTime")
+    void deleteRepositoryExpirationDateTimeOut(LocalDateTime expirationDateTime);
 }

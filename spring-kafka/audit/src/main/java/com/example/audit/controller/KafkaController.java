@@ -1,36 +1,37 @@
-package com.example.consumer.controller;
+package com.example.audit.controller;
 
-import com.example.consumer.service.RepertoryService;
+import com.example.audit.service.AuditService;
+import com.example.model.dto.AuditDto;
 import com.example.model.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class KafkaController {
-    private final RepertoryService repertoryService;
+    private final AuditService auditService;
 
-    @KafkaListener(topics = "${kafka.topics.messageRequest}", concurrency = "2")
+    @KafkaListener(topics = "${kafka.topics.messageRequest}")
     public void handleSaveUserMessage(UserDto userDto) {
-        repertoryService.saveRepertory(userDto);
-
+        auditService.actionAudit(new AuditDto("SAVE_MESSAGE", userDto.userId(), "Message saved in Consumer"));
         log.info("Consumed from producer: " + userDto);
     }
 
     @KafkaListener(topics = "${kafka.topics.deleteRequest}")
     public void handleDeleteUserMessages(UserDto userDto) {
-        repertoryService.deleteRepertoryOfUser(userDto);
+        auditService.actionAudit(new AuditDto("DELETE_MESSAGE", userDto.userId(), "Message deleted from repertory"));
 
         log.info("Consumed delete request from producer: " + userDto);
+
     }
 
     @KafkaListener(topics = "${kafka.topics.historyRequest}")
     public void handleUserHistoryRequest(Integer userId) {
         log.info("Received history request for user ID: " + userId);
 
-        repertoryService.getMessages(userId);
+        auditService.actionAudit(new AuditDto("HISTORY_REQUEST", userId, "User requested chat history"));
     }
 }

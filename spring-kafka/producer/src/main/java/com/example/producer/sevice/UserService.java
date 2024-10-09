@@ -1,44 +1,58 @@
 package com.example.producer.sevice;
 
-import com.example.model.dto.AuditDto;
 import com.example.model.dto.UserDto;
-import com.example.producer.entity.User;
-import com.example.producer.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
-    private final UserMapper userMapper;
     @Value("${message.retention-period}")
     private int retentionPeriod;
-    private final RestTemplate restTemplate;
-    @Value("${audit-service.url}")
-    private String auditServiceUrl;
 
-    public UserDto sendMessageToKafka(UserDto userDto) {
-        User user = new User(userDto.userId(),
+    @Value("${kafka.topics.messageRequest}")
+    private String messageRequestTopic;
+
+    @Value("${kafka.topics.deleteRequest}")
+    private String deleteRequestTopic;
+
+    @Value("${kafka.topics.historyRequest}")
+    private String historyRequestTopic;
+
+    private final KafkaTemplate<Integer, Object> kafkaTemplate;
+
+    public void sendMessageToKafka(UserDto userDto) {
+        UserDto updateDto = new UserDto(userDto.userId(),
                 userDto.message(),
                 LocalDateTime.now(),
                 LocalDateTime.now().plusMinutes(retentionPeriod)
         );
 
-        sendAuditLog("ADD_MESSAGE", userDto.userId(), "Message: %s, sent to Kafka ".formatted(userDto.message()));
-
-        return userMapper.toDto(user);
+        kafkaTemplate.send(messageRequestTopic, updateDto);
+        log.info("Message {} sent to Kafka in topic {}", userDto, messageRequestTopic);
     }
 
-    public void sendAuditLog(String actionType, Integer userId, String details) {
-        AuditDto auditDto = new AuditDto(actionType, userId, details);
-
-        restTemplate.postForObject(
-                auditServiceUrl,
-                auditDto, AuditDto.class
-        );
+    public void requestMessageHistory(Integer userId) {
+        kafkaTemplate.send(historyRequestTopic, userId);
     }
+
+    public void sendDeletedUserToKafka(UserDto userDto) {
+        kafkaTemplate.send(deleteRequestTopic, userDto);
+
+        log.info("Delete request for user {} sent to Kafka in topic {}", userDto, deleteRequestTopic);
+    }
+//    public void sendAuditLog(String actionType, Integer userId, String details) {
+//        AuditDto auditDto = new AuditDto(actionType, userId, details);
+//
+//        restTemplate.postForObject(
+//                auditServiceUrl,
+//                auditDto, AuditDto.class
+//        );
+//    }
 }
